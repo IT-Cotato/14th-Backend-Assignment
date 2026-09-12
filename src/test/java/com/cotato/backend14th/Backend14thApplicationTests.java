@@ -1,10 +1,10 @@
-package com.cotato._th_backend_assignment;
+package com.cotato.backend14th;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApplicationTests {
+class Backend14thApplicationTests {
 
 	@Test
 	void contextLoads() {
