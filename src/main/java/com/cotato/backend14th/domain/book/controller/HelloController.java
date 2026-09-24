@@ -1,4 +1,4 @@
-package com.cotato.backend14th;
+package com.cotato.backend14th.domain.book.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

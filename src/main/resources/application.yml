@@ -1,3 +1,7 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: 14th-backend-assignment
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
