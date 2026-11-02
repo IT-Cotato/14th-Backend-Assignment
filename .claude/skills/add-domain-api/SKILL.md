@@ -9,7 +9,7 @@ description: 이 프로젝트에 새 도메인이나 API를 추가할 때 사용
 
 1. `docs/conventions.md`와 `domain/book/`의 코드를 읽습니다.
 2. `domain/{도메인}/` 아래에 `controller`, `dto`, `entity`, `repository` 패키지를 만듭니다.
-3. 엔티티를 작성합니다. `BaseEntity`를 상속하고 `.claude/rules/entity-changes.md`를 따릅니다.
+3. 엔티티를 작성합니다. `BaseEntity`를 상속하고 `.claude/rules/entity.md`를 따릅니다.
 4. `JpaRepository`를 상속한 repository를 작성합니다.
 5. 요청 DTO와 응답 DTO를 작성합니다. 엔티티를 응답으로 직접 반환하지 않습니다.
 6. 필요한 에러를 `ErrorCode`에 `{도메인}-{3자리 번호}` 형식으로 추가합니다.

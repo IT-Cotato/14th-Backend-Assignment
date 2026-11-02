@@ -43,34 +43,18 @@ com.cotato.backend14th
 
 ## 5. 코드와 Git 규칙
 
-**코드**
-- 성공 응답은 `ResponseUtils`로 반환합니다.
-- 예외는 `ErrorCode`에 추가하고 `Backend14thException`으로 던집니다.
-- 엔티티는 `BaseEntity`를 상속합니다.
-
-**Git**
-- 브랜치: `minho/basic`에서 `minho/{작업명}` 브랜치를 만들어 작업합니다. (예: `minho/harness`)
-- 커밋: `feat:`, `fix:`, `chore:`, `docs:`
-- PR: base는 반드시 `minho/basic`이고, `.github/PULL_REQUEST_TEMPLATE.md`를 사용합니다.
+- Git: minho/basic 기준 작업, develop 대상 작업 금지 → [git-workflow](.claude/rules/git-workflow.md)
+- API: ResponseUtils와 ErrorCode + Backend14thException 사용 → [api](.claude/rules/api.md)
+- 엔티티: BaseEntity 상속, 변경 시 테스트 작성 → [entity](.claude/rules/entity.md)
 
 ## 6. 영구 금지 사항
 
-**보안**
-- `.env`를 열거나 수정하거나 내용을 출력하지 않고, 커밋하지도 않습니다.
-- 비밀번호나 토큰을 yml, 코드, 로그, 커밋에 직접 쓰지 않습니다. yml에서는 `${환경변수}` 참조만 사용합니다.
-
-**Git**
-- `develop`으로 PR을 보내거나 `develop`에 직접 커밋, 푸시하지 않습니다.
-- 강제 푸시를 하지 않습니다.
-- 사용자 요청 없이 커밋이나 푸시를 하지 않습니다.
-
-**DB**
-- 사용자 승인 없이 `DROP`, `TRUNCATE`, `DELETE`나 데이터를 바꾸는 요청을 실행하지 않습니다.
-- `ddl-auto`를 `create`나 `create-drop`으로 바꾸지 않습니다.
-- 테스트 없이 엔티티 구조를 변경하지 않습니다. 엔티티를 바꿀 때는 관련 테스트를 함께 작성합니다.
-
-**범위**
-- 승인 없이 의존성을 추가하거나 버전을 변경하지 않습니다.
+- 보안: `.env` 접근과 비밀번호 직접 기입 금지 → [secrets](.claude/rules/secrets.md)
+- Git: `develop` 대상 PR·커밋·푸시, 강제 푸시, 요청 없는 커밋·푸시 금지 → [git-workflow](.claude/rules/git-workflow.md)
+- DB: 승인 없는 `DROP`, `TRUNCATE`, `DELETE`, 데이터 변경 요청 금지
+- DB: `ddl-auto`를 `create`나 `create-drop`으로 변경 금지
+- 엔티티: 테스트 없는 구조 변경 금지 → [entity](.claude/rules/entity.md)
+- 범위: 승인 없는 의존성 추가와 버전 변경 금지
 
 ## 7. 디렉터리 구조
 
@@ -98,5 +82,5 @@ com.cotato.backend14th
 - [데이터베이스](docs/database.md): DB 설정 방식과 스키마 변경 절차
 - [Git 작업 절차](docs/git-workflow.md): 브랜치, 커밋, PR 절차
 - [4주차 하네스 작업](docs/features/week4-harness.md): 이번 제출 정리
-- 규칙: [secrets](.claude/rules/secrets.md), [entity-changes](.claude/rules/entity-changes.md)
+- 규칙: [git-workflow](.claude/rules/git-workflow.md), [secrets](.claude/rules/secrets.md), [api](.claude/rules/api.md), [entity](.claude/rules/entity.md)
 - 스킬: [add-domain-api](.claude/skills/add-domain-api/SKILL.md), [pre-pr-check](.claude/skills/pre-pr-check/SKILL.md)
