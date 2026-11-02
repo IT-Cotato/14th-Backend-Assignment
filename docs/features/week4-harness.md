@@ -24,7 +24,7 @@
 | `docs/` | 아키텍처, 컨벤션, 데이터베이스, Git 작업 절차 |
 | `.claude/rules/` | 전역: Git 작업(`git-workflow`), 민감 정보(`secrets`) / 조건부: 컨트롤러(`api`), 엔티티(`entity`) |
 | `.claude/skills/` | 도메인 API 추가(`add-domain-api`), PR 전 점검(`pre-pr-check`), 작업 정리 문서 작성(`write-feature-doc`) |
-| `.claude/hooks/` | `.env` 접근 차단, `develop` 대상 Git 작업 차단 |
+| `.claude/hooks/` | `.env` 접근 차단(`block-env-access`), `develop` 대상 Git 작업 차단(`guard-git-target`), 민감한 설정 파일 수정 차단(`block-secrets`) |
 | `.claude/settings.json` | 훅 연결, `.env` 접근 거부 권한 |
 | `.dev/` | AI 작업 기록 폴더 (`learnings`, `scratchpad`) |
 
@@ -34,6 +34,13 @@
 
 Claude Code 세션에서도 `.env` 차단 훅이 실제로 실행되는 것을 확인했습니다. 샘플 문자열 `.env`가 들어 있던 테스트 명령이 차단되었습니다.
 
+`block-secrets`는 별도의 샘플 입력 19건으로 시험했고 모두 기대한 결과가 나왔습니다. Claude Code 세션에서도 `src/main/resources/application-hooktest.yml` 생성이 차단되는 것을 확인했습니다.
+
+`block-secrets`의 대상은 다음과 같습니다.
+
+- **차단:** `.env`, `.env.*`, `application-*.yml`, `application-*.yaml`
+- **통과:** `.env.example`, `application.yml`, `src/test/` 아래의 테스트 설정, 그 외 파일
+
 ## 훅의 한계
 
 - 터미널에서 직접 실행하는 명령에는 적용되지 않습니다.
@@ -41,6 +48,8 @@ Claude Code 세션에서도 `.env` 차단 훅이 실제로 실행되는 것을 �
 - `git switch develop && git commit`처럼 한 명령 안에서 브랜치를 바꾸면 전환 전 브랜치를 기준으로 판단합니다.
 - 명령에 샘플 문자열로 `.env`가 들어가도 차단될 수 있습니다.
 - `pwsh`가 없는 환경에서는 훅이 실행되지 않습니다.
+- `block-secrets`는 Edit, Write만 검사하므로 셸 명령으로 설정 파일을 고치는 경우는 막지 못합니다.
+- `block-secrets`가 켜져 있으면 Claude가 Edit, Write로 `application-local.yml`을 수정할 수 없습니다. 이 파일의 설정은 사용자가 직접 수정합니다.
 
 ## 남은 과제
 
