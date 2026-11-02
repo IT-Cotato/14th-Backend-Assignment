@@ -83,4 +83,4 @@ com.cotato.backend14th
 - [Git 작업 절차](docs/git-workflow.md): 브랜치, 커밋, PR 절차
 - [4주차 하네스 작업](docs/features/week4-harness.md): 이번 제출 정리
 - 규칙: [git-workflow](.claude/rules/git-workflow.md), [secrets](.claude/rules/secrets.md), [api](.claude/rules/api.md), [entity](.claude/rules/entity.md)
-- 스킬: [add-domain-api](.claude/skills/add-domain-api/SKILL.md), [pre-pr-check](.claude/skills/pre-pr-check/SKILL.md)
+- 스킬: [add-domain-api](.claude/skills/add-domain-api/SKILL.md), [pre-pr-check](.claude/skills/pre-pr-check/SKILL.md), [write-feature-doc](.claude/skills/write-feature-doc/SKILL.md)

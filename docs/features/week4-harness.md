@@ -23,7 +23,7 @@
 | `CLAUDE.md` | 프로젝트 지도, 영구 금지 사항, 문서 링크 |
 | `docs/` | 아키텍처, 컨벤션, 데이터베이스, Git 작업 절차 |
 | `.claude/rules/` | 전역: Git 작업(`git-workflow`), 민감 정보(`secrets`) / 조건부: 컨트롤러(`api`), 엔티티(`entity`) |
-| `.claude/skills/` | 도메인 API 추가(`add-domain-api`), PR 전 점검(`pre-pr-check`) |
+| `.claude/skills/` | 도메인 API 추가(`add-domain-api`), PR 전 점검(`pre-pr-check`), 작업 정리 문서 작성(`write-feature-doc`) |
 | `.claude/hooks/` | `.env` 접근 차단, `develop` 대상 Git 작업 차단 |
 | `.claude/settings.json` | 훅 연결, `.env` 접근 거부 권한 |
 | `.dev/` | AI 작업 기록 폴더 (`learnings`, `scratchpad`) |
