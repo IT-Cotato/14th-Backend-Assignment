@@ -9,3 +9,9 @@ Java 21과 MySQL을 준비한다. 앱 실행과 테스트에는 검증 전용 �
 5. 실행한 앱을 종료한다. 결과를 공유할 때는 빌드, DB, Swagger를 구분하고 자격 증명은 생략한다.
 
 연결 실패 시 MySQL 실행 상태, URL의 호스트·포트와 스키마 존재 여부, 계정 권한을 차례로 확인한다.
+
+## Claude Code 훅 점검
+
+1. `node --version`으로 Node.js가 PATH에 있는지 확인한다.
+2. 프로젝트 루트에서 Claude Code를 열고 `/hooks`의 `PreToolUse`에 `Edit|Write` 훅이 등록되어 있는지 확인한다. 이 훅은 두 도구의 `.env` 수정을 차단한다. 실제 연결 정보는 직접 설정한다.
+3. 개인 권한과 도구 설정은 `.claude/settings.local.json`에 둔다. `git check-ignore .claude/settings.local.json`으로 커밋 대상에서 제외되는지 확인한다. 팀에서 공유하는 훅 설정은 `.claude/settings.json`에서 관리한다.
