@@ -1,7 +1,7 @@
 HELP.md
 .gradle
 build/
-!gradle/wrapper/gradle-wrapper.jar
+!backend/gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -37,4 +37,20 @@ out/
 .vscode/
 
 ### environment ###
+backend/.env
+
+
+### Secrets ###
 .env
+.env.*
+!.env.example
+!**/.env.example
+
+### Frontend ###
+node_modules/
+dist/
+coverage/
+
+### Playwright ###
+playwright-report/
+test-results/
