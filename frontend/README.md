@@ -1,7 +1,7 @@
 # 코테이토 스터디 매칭 - 프론트엔드
 
 React + TypeScript + Vite + Tailwind CSS로 만든 스터디 매칭 플랫폼 화면이에요.
-백엔드(`../backend`, Spring Boot) API를 Axios로 호출해요. 기능 설명은 [`docs/features.md`](../docs/features.md)를 참고해요.
+백엔드(`../backend`, Spring Boot) API를 Axios로 호출해요. 기능 설명은 [기능 문서](../docs/features/117-study-platform.md)를 참고해요.
 
 ## 실행
 

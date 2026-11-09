@@ -1,7 +1,7 @@
 # 기능 문서
 
 코테이토 14기 스터디 매칭 플랫폼에서 구현한 기능을 화면, API, 규칙, 검증 방법 기준으로 정리한 문서예요.
-요청·응답 형식은 [api-spec.md](./api-spec.md), 폴더 구조는 [project-structure.md](./project-structure.md)를 참고해요.
+요청·응답 형식은 [api-spec.md](../api-spec.md), 폴더 구조는 [project-structure.md](../project-structure.md)를 참고해요.
 
 > 핵심 개념: **모집글에 댓글을 남기는 것이 곧 스터디 신청**이에요.
 
@@ -92,7 +92,7 @@
 
 - 성공: `{ success, status, data, timestamp }`. 프론트엔드는 항상 `data`를 꺼내 써요. 204는 본문이 없어요.
 - 실패: `{ success, status, code, message, method, path, timestamp }`. 화면에는 서버의 `message`를 보여주고, 상황별로 더 구체적인 안내로 바꿔요.
-- 오류 코드 전체 목록은 [api-spec.md 7장](./api-spec.md#7-에러-코드)을 참고해요.
+- 오류 코드 전체 목록은 [api-spec.md 7장](../api-spec.md#7-에러-코드)을 참고해요.
 
 ---
 

@@ -39,12 +39,14 @@
 │   ├── playwright.config.ts
 │   └── package.json
 ├── docs/
-│   ├── api-spec.md           # API 명세 (13개 API)
-│   ├── features.md           # 기능 문서
-│   ├── project-structure.md  # 이 문서
+│   ├── api-spec.md                 # API 명세 (13개 API)
+│   ├── features/                   # 기능별 문서 폴더
+│   │   └── 117-study-platform.md   # Issue #117 기능 문서
+│   ├── project-structure.md        # 이 문서
 │   ├── coding-conventions.md
-│   ├── erd/erdCloud.png      # ERD 이미지
-│   └── screenshots/          # E2E로 찍은 주요 화면
+│   ├── erd/
+│   │   └── erdCloud.png
+│   └── screenshots/
 └── CLAUDE.md                 # 프로젝트 전역 지침
 ```
 
