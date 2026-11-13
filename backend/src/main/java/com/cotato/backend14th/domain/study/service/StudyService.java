@@ -3,6 +3,9 @@ package com.cotato.backend14th.domain.study.service;
 import com.cotato.backend14th.domain.study.dto.StudyDtos.*;
 import com.cotato.backend14th.domain.study.entity.*;
 import com.cotato.backend14th.domain.study.repository.StudyPostRepository;
+import com.cotato.backend14th.domain.study.repository.CommentRepository;
+import java.util.HashMap;
+import java.util.Map;
 import com.cotato.backend14th.domain.user.dto.AuthDtos.Author;
 import com.cotato.backend14th.domain.user.entity.Part;
 import com.cotato.backend14th.domain.user.repository.UserRepository;
@@ -21,6 +24,7 @@ import static com.cotato.backend14th.global.exception.ErrorCode.*;
 public class StudyService {
     private final StudyPostRepository posts;
     private final UserRepository users;
+    private final CommentRepository comments;
 
     @Transactional
     public Id create(long user, Create request) {
@@ -30,8 +34,13 @@ public class StudyService {
     public PageResponse<Summary> list(String keyword, StudyStatus status, Part part, int page, int size) {
         var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt", "id"));
         var found = posts.search(keyword.strip(), status, part, pageable);
+        Map<Long, Long> counts = new HashMap<>();
+        if (found.hasContent()) {
+            comments.countForPosts(found.map(StudyPost::getId).getContent())
+                    .forEach(count -> counts.put(count.getPostId(), count.getTotal()));
+        }
         return PageResponse.from(found.map(post -> new Summary(post.getId(), post.getTitle(), post.getStudyStatus(),
-                Author.from(post.getAuthor()), 0, post.getCreatedAt())));
+                Author.from(post.getAuthor()), counts.getOrDefault(post.getId(), 0L), post.getCreatedAt())));
     }
 
     public Detail detail(long id, Long viewer) {

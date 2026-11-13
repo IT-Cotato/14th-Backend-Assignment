@@ -5,6 +5,7 @@ import { api, errorMessage, json, parts } from './api'
 import type { Part } from './api'
 import { useAuth } from './auth'
 import { useLoad } from './use-load'
+import { Comments } from './comments'
 
 export type Author = { nickname: string; generation: number; part: Part }
 export type Page<T> = { content: T[]; page: number; size: number; totalElements: number; totalPages: number }
@@ -110,6 +111,7 @@ export function StudyDetail() {
       </div>}
       {error && <p role="alert">{error}</p>}
     </article>
+    <Comments key={id} postId={id!} closed={post.studyStatus === 'CLOSED'} />
   </div>
 }
 
