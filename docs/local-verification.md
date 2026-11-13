@@ -1,17 +1,13 @@
 # 로컬 개발 환경 점검
 
-Java 21과 MySQL을 준비한다. 앱 실행과 테스트에는 검증 전용 로컬 스키마를 사용한다. 로컬 프로필은 Hibernate의 `ddl-auto: update` 설정으로 스키마를 갱신할 수 있다.
+Java 17, 로컬 MySQL, Node.js 22.12 이상을 준비한다. 검증 전용 MySQL 스키마를 만든다. local 프로필은 Hibernate의 `ddl-auto: update`로 스키마를 갱신한다.
 
-1. 프로젝트 루트의 Git에서 제외된 `.env` 또는 셸 환경 변수에 `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`를 설정한다. URL 형식은 `jdbc:mysql://127.0.0.1:3306/<스키마>`다. `git check-ignore .env`로 제외 여부를 확인한다.
-2. `./gradlew build`를 실행한다. Windows PowerShell에서는 `./gradlew.bat build`를 쓴다. DB 설정이 준비되기 전에는 `assemble`로 컴파일과 패키징을 먼저 확인할 수 있다.
-3. `./gradlew bootRun`으로 앱을 띄운다. Windows에서는 `./gradlew.bat bootRun`을 쓴다. 로그에서 Hikari 연결과 애플리케이션 시작을 확인한다.
-4. `http://localhost:8080/swagger-ui/index.html`에서 Swagger UI를 열고 `/v3/api-docs`가 생성되는지 확인한다. `GET /hello`로 HTTP 응답을, 검증 전용 DB에서 `POST /books` 후 반환된 ID의 `GET /books/{id}`로 DB 저장과 조회를 확인한다.
-5. 실행한 앱을 종료한다. 결과를 공유할 때는 빌드, DB, Swagger를 구분하고 자격 증명은 생략한다.
-
-연결 실패 시 MySQL 실행 상태, URL의 호스트·포트와 스키마 존재 여부, 계정 권한을 차례로 확인한다.
+1. `backend/.env.example`을 `backend/.env`로 복사해 네 항목을 채운다. DB_URL 형식은 `jdbc:mysql://localhost:3306/<스키마>`다. JWT_SECRET은 무작위 32바이트 이상을 Base64로 인코딩한 값이다.
+2. `backend/`에서 `./gradlew build`, `./gradlew bootRun`을 실행한다. Windows에서는 `./gradlew.bat`를 사용한다.
+3. `http://localhost:8080/swagger-ui/index.html`에서 API를 열고 인증이 필요한 호출에는 로그인한 토큰을 입력한다.
+4. `frontend/`에서 `npm ci`, `npm run build`, `npm run dev`를 실행한다. 앱은 `http://localhost:3000`에서 열린다.
+5. Chromium을 처음 준비할 때 `npx playwright install chromium`을 실행한다. 백엔드와 DB를 켜고 `npx playwright test`를 실행한다. Playwright가 프론트 서버를 띄운다. 테스트 데이터는 `e2e-` 이메일로 식별한다.
 
 ## Claude Code 훅 점검
 
-1. `node --version`으로 Node.js가 PATH에 있는지 확인한다.
-2. 프로젝트 루트에서 Claude Code를 열고 `/hooks`의 `PreToolUse`에 `Edit|Write` 훅이 등록되어 있는지 확인한다. 이 훅은 두 도구의 `.env` 수정을 차단한다. 실제 연결 정보는 직접 설정한다.
-3. 개인 권한과 도구 설정은 `.claude/settings.local.json`에 둔다. `git check-ignore .claude/settings.local.json`으로 커밋 대상에서 제외되는지 확인한다. 팀에서 공유하는 훅 설정은 `.claude/settings.json`에서 관리한다.
+루트에서 `/hooks`를 열어 `PreToolUse`의 `Edit|Write`를 확인한다. 루트의 `.claude/hooks/protect-env.cjs`는 파일 경로의 마지막 이름을 검사하므로 `backend/.env`에도 적용된다. 개인 설정은 `.claude/settings.local.json`에 두고, 팀 설정은 `.claude/settings.json`에서 관리한다.
