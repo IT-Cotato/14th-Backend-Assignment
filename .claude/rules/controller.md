@@ -1,7 +1,7 @@
 ---
 paths:
-  - "src/main/java/**/controller/**/*.java"
-  - "src/main/java/**/HelloController.java"
+  - "backend/src/main/java/**/controller/**/*.java"
+  - "backend/src/main/java/**/HelloController.java"
 ---
 
 # 컨트롤러 변경 규칙
