@@ -1,35 +1,87 @@
-// SecurityConfig.java
 package com.cotato.backend14th.global.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.cotato.backend14th.global.common.response.ErrorResponse;
+import com.cotato.backend14th.global.exception.ErrorCode;
+import com.cotato.backend14th.global.security.TokenService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.*;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
-
-import lombok.RequiredArgsConstructor;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final CorsConfigurationSource corsConfigurationSource;
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource)) // 앞서 만든 CorsConfig를 그대로 사용해요
-                .csrf(AbstractHttpConfigurer::disable) // REST API는 세션 기반이 아니라 CSRF 보호가 필요 없어요
-                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않아요
+    SecurityFilterChain filterChain(HttpSecurity http, TokenService tokens, ObjectMapper mapper,
+            @Qualifier("corsConfigurationSource") CorsConfigurationSource cors) throws Exception {
+        return http.cors(config -> config.configurationSource(cors))
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .exceptionHandling(config -> config.authenticationEntryPoint(
+                        (request, response, error) -> unauthorized(request, response, mapper)))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // 이번 주는 전부 열어둬요
-                );
-        return http.build();
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/study-posts", "/api/study-posts/{id}",
+                                "/api/study-posts/{id}/comments").permitAll()
+                        .requestMatchers("/api/**").authenticated()
+                        .anyRequest().permitAll())
+                .addFilterBefore(new OncePerRequestFilter() {
+                    @Override
+                    protected boolean shouldNotFilter(HttpServletRequest request) {
+                        return !request.getServletPath().startsWith("/api/");
+                    }
+
+                    @Override
+                    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                            FilterChain chain) throws ServletException, IOException {
+                        String header = request.getHeader("Authorization");
+                        if (header != null) {
+                            try {
+                                if (!header.regionMatches(true, 0, "Bearer ", 0, 7)) {
+                                    throw new org.springframework.security.oauth2.jwt.BadJwtException("Bearer token required");
+                                }
+                                var jwt = tokens.authenticate(header.substring(7));
+                                SecurityContextHolder.getContext().setAuthentication(
+                                        new UsernamePasswordAuthenticationToken(jwt, null, List.of()));
+                            } catch (JwtException | IllegalArgumentException error) {
+                                unauthorized(request, response, mapper);
+                                return;
+                            }
+                        }
+                        chain.doFilter(request, response);
+                    }
+                }, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    private static void unauthorized(HttpServletRequest request, HttpServletResponse response, ObjectMapper mapper)
+            throws IOException {
+        response.setStatus(401);
+        response.setContentType("application/json");
+        mapper.writeValue(response.getOutputStream(), ErrorResponse.of(ErrorCode.UNAUTHORIZED, request));
     }
 }

@@ -28,6 +28,18 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(e.getErrorCode(), request));
     }
 
+    @ExceptionHandler({
+            org.springframework.web.bind.MethodArgumentNotValidException.class,
+            org.springframework.web.method.annotation.HandlerMethodValidationException.class,
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
+            org.springframework.http.converter.HttpMessageNotReadableException.class,
+            jakarta.validation.ConstraintViolationException.class
+    })
+    public ResponseEntity<ErrorResponse> handleInvalidInput(Exception error, HttpServletRequest request) {
+        var code = ErrorCode.INVALID_INPUT;
+        return ResponseEntity.badRequest().body(ErrorResponse.of(code, request));
+    }
+
     // 그 외 예상치 못한 모든 예외는 500으로 처리해요
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(
