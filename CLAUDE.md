@@ -4,9 +4,14 @@
 
 ## 1. 프로젝트 개요
 
-- Cotato 14기 백엔드 스터디 과제입니다. 현재 Book 도메인 예제와 공통 기반이 구현되어 있습니다.
+- Cotato 14기 백엔드 스터디 5,6주차 과제: **코테이토 스터디 매칭 플랫폼**입니다.
+  - 회원가입(기수, 파트)과 로그인/로그아웃, 내 정보 조회
+  - 스터디 모집글 작성, 목록(검색, 모집 상태와 파트 필터, 페이징), 상세, 수정, 삭제
+  - 모집글 댓글 작성, 목록, 수정, 삭제 (댓글이 곧 스터디 신청)
+  - 도메인: User, StudyPost, StudyPostComment
+- **구현 기준:** API, 데이터 모델, 권한, 에러 코드, 프론트 화면은 반드시 [docs/api-spec.md](docs/api-spec.md)를 먼저 읽고 따릅니다. 이 문서가 유일한 요구사항이며, 없는 내용은 추측해서 추가하지 않고 사용자에게 묻습니다. ERD는 [docs/erd/](docs/erd/)에 있습니다.
 - 모노레포입니다. `backend/`에 Spring Boot API, `frontend/`에 Vite React SPA가 있습니다.
-- API: `GET /hello`, `GET /books/{id}`, `POST /books`
+- 현재 구현된 API는 3주차 예제(`GET /hello`, `GET /books/{id}`, `POST /books`)뿐입니다.
 - 기본 포트: 백엔드 8081 (`local` 프로필, 환경변수 `SERVER_PORT`로 변경 가능), 프론트 3000
 - Swagger: `http://localhost:8081/swagger-ui/index.html`
 
