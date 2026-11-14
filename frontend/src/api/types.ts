@@ -135,3 +135,21 @@ export interface StudyPostUpdateRequest {
   content?: string
   studyStatus?: StudyStatus
 }
+
+// 10, 12. 댓글 작성/수정
+export interface CommentRequest {
+  content: string
+}
+
+export interface CommentIdResponse {
+  commentId: number
+}
+
+// 11. 댓글 목록
+export interface Comment {
+  commentId: number
+  content: string
+  author: Author
+  isAuthor: boolean
+  createdAt: string
+}

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { getErrorMessage } from '../api/errors'
 import { deleteStudyPost, getStudyPost, updateStudyPost } from '../api/studyPosts'
 import type { StudyPostDetail } from '../api/types'
+import { CommentSection } from '../components/CommentSection'
 import { ErrorAlert } from '../components/ErrorAlert'
 import { LoadingStatus } from '../components/LoadingStatus'
 import { StatusBadge } from '../components/StatusBadge'
@@ -133,6 +134,8 @@ export function StudyDetailPage() {
           )}
         </article>
       )}
+
+      {post && <CommentSection postId={post.postId} />}
     </section>
   )
 }
