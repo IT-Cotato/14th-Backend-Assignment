@@ -62,11 +62,12 @@
 
 ## 3. 공통 규칙
 
-- 모든 API의 주소는 `/api`로 시작해요.
+- 모든 API의 주소는 `/api`로 시작해요. 3주차 예제(`/hello`, `/books`)는 이 규칙의 예외로 그대로 둬요.
 - 인증이 필요한 API는 요청 헤더에 `Authorization: Bearer 토큰`을 담아 보내요.
 - 권한은 두 가지로 나눠요: **공개**(인증 불필요), **로그인**(토큰 필요). 수정과 삭제는 여기에 더해 **작성자** 본인이어야 해요.
-- 응답은 3주차에서 만든 공통 응답으로 감싸요. 아래 명세의 응답 예시는 `data` 안쪽만 적은 거예요.
-- 본문이 없는 204 응답은 감싸지 않고 그대로 내려줘요.
+- 응답은 3주차에서 만든 공통 응답 `ApiResponse<T>`(success, status, data, timestamp)로 감싸요. 200은 `ResponseUtils.ok`, 201은 `ResponseUtils.created`로 만들어요. 아래 명세의 응답 예시는 `data` 안쪽만 적은 거예요.
+- 본문이 없는 204 응답은 감싸지 않고 그대로 내려줘요. (`ResponseEntity.noContent().build()`)
+- 날짜 형식: 공통 응답의 `timestamp`는 `yyyy-MM-dd HH:mm:ss`, `data` 안의 날짜(`createdAt`, `updatedAt`)는 ISO 형식(`2026-11-08T12:00:00`)이에요.
 - 목록 API의 페이지 응답은 `content`, `page`, `size`, `totalElements`, `totalPages`를 내려줘요.
 - 작성자 정보는 `author` 객체로 내려줘요: `nickname`, `generation`, `part`
 
@@ -89,6 +90,8 @@
 - 응답의 `code`는 3주차와 같이 도메인 prefix + 하이픈 + 일련번호예요. (예: `STUDY-001`)
 - 이 문서의 `STUDY_POST_NOT_FOUND` 같은 이름은 `ErrorCode` enum의 상수 이름이에요. (3주차의 `BOOK_NOT_FOUND`가 `BOOK-001`인 것과 같은 관계)
 - `ErrorCode`는 3주차처럼 enum 하나에 모아서 관리하고, 새 도메인은 새 그룹을 추가해요.
+- 400 요청 값 오류는 `INVALID_INPUT`만 써요. 기존 `COMMON_BAD_REQUEST`(`COMMON-001`)는 쓰지 않아요. (구현할 때 지울 후보)
+- 검증 실패(`@Valid`), 잘못된 쿼리 값, Security 필터에서 나는 401도 이 형식으로 내려줘야 해요. 3주차 `GlobalExceptionHandler`는 `Backend14thException`과 그 밖의 `Exception`(500)만 처리하므로, 구현할 때 이 경우들의 처리를 추가해야 해요.
 
 ## 4. API 목록
 
@@ -177,6 +180,8 @@ Response `204` 본문 없음
 규칙
 
 - 서버는 사용한 토큰을 만료 시각까지 무효 처리해요. (저장 방식은 자유: DB, 인메모리 등)
+  - 이 프로젝트는 **인메모리**로 저장해요. (토큰 → 만료 시각) 그래서 추가 테이블이 없어요.
+  - 한계: 서버를 재시작하면 목록이 사라져서, 로그아웃한 토큰이 만료 전까지 다시 유효해져요.
 - 로그아웃한 토큰으로 다시 요청하면 401을 내려줘요.
 - 프론트는 저장해둔 토큰을 지우고 로그인 화면으로 이동해요.
 
