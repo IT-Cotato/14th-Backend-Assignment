@@ -20,6 +20,15 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER-001", "이미 가입된 이메일이에요."),
     INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "USER-002", "이메일 또는 비밀번호가 틀려요."),
 
+    // STUDY
+    STUDY_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY-001", "존재하지 않는 스터디 모집글이에요."),
+    NOT_POST_AUTHOR(HttpStatus.FORBIDDEN, "STUDY-002", "모집글 작성자가 아니에요."),
+    STUDY_POST_CLOSED(HttpStatus.CONFLICT, "STUDY-003", "모집이 마감된 글에는 댓글을 쓸 수 없어요."),
+
+    // COMMENT
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-001", "존재하지 않는 댓글이에요."),
+    NOT_COMMENT_AUTHOR(HttpStatus.FORBIDDEN, "COMMENT-002", "댓글 작성자가 아니에요."),
+
     // BOOK
     BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOK-001", "책을 찾을 수 없습니다.");
 

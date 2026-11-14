@@ -6,6 +6,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.cotato.backend14th.global.common.response.ErrorResponse;
@@ -31,9 +32,11 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(e.getErrorCode(), request));
     }
 
-    // 요청 값 검증 실패(@Valid), 읽을 수 없는 본문(Enum에 없는 값 등), 잘못된 타입의 파라미터는 400으로 처리해요
+    // 요청 값 검증 실패(@Valid), 쿼리 값 검증 실패(@Min 등), 읽을 수 없는 본문(Enum에 없는 값 등),
+    // 잘못된 타입의 파라미터(?status=WRONG 등)는 400으로 처리해요
     @ExceptionHandler({
             MethodArgumentNotValidException.class,
+            HandlerMethodValidationException.class,
             HttpMessageNotReadableException.class,
             MethodArgumentTypeMismatchException.class
     })
