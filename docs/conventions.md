@@ -1,12 +1,13 @@
 # 컨벤션
 
-실제 코드에서 쓰는 규칙을 정리한 문서입니다.
+실제 코드에서 쓰는 규칙을 정리한 문서입니다. "5,6주차부터"라고 적힌 항목은 [API 명세](api-spec.md)를 구현할 때 적용할 규칙이고, 아직 코드에는 없습니다.
 
 ## 네이밍
 
 | 대상 | 패턴 | 현재 코드 |
 |---|---|---|
 | 컨트롤러 | `{도메인}Controller` | `BookController` |
+| 서비스 (5,6주차부터) | `{도메인}Service` | 없음 |
 | 리포지토리 | `{도메인}Repository` | `BookRepository` |
 | 엔티티 | `{도메인}` | `Book` |
 | 요청 DTO | `{도메인}Request` | `BookRequest` |
@@ -14,6 +15,8 @@
 | 설정 클래스 | `{대상}Config` | `CorsConfig`, `SecurityConfig`, `SwaggerConfig` |
 | 에러 코드 상수 | `{도메인}_{상황}` | `BOOK_NOT_FOUND` |
 | 에러 코드 값 | `{도메인}-{3자리 번호}` | `BOOK-001`, `COMMON-001` |
+
+5,6주차의 에러 코드 상수 이름과 값은 [API 명세 8장](api-spec.md#8-에러-코드)을 그대로 따릅니다. `INVALID_INPUT`, `UNAUTHORIZED`, `NOT_POST_AUTHOR`처럼 `{도메인}_{상황}` 패턴과 다른 이름도 명세가 우선합니다. 명세에 없는 에러를 새로 만들 때만 위 패턴을 씁니다.
 
 ## DTO
 
@@ -27,6 +30,8 @@ new BookResponse(book.getId(), book.getTitle(), book.getAuthor())
 ```
 
 현재 요청 DTO에는 검증 어노테이션이 없고, 컨트롤러에도 `@Valid`를 쓰지 않습니다.
+
+5,6주차부터는 명세의 "검증" 규칙을 요청 DTO의 검증 어노테이션과 컨트롤러의 `@Valid`로 적용합니다. 검증에 실패하면 `INVALID_INPUT`(400)을 내려줍니다.
 
 ## 성공 응답
 
@@ -48,6 +53,8 @@ return ResponseUtils.created(data);  // 201
 
 - `data`가 null이면 응답에서 필드가 빠집니다.
 - `HelloController`는 이 형식을 쓰지 않고 `String`을 그대로 반환합니다.
+- `timestamp`는 `yyyy-MM-dd HH:mm:ss` 형식입니다. `data` 안의 날짜(`createdAt` 등)는 별도 설정 없이 ISO 형식(`2026-11-08T12:00:00`)으로 나갑니다.
+- 5,6주차부터 본문이 없는 204 응답은 감싸지 않습니다. `ResponseEntity<Void>`로 선언하고 `ResponseEntity.noContent().build()`로 반환합니다.
 
 ## 예외 처리
 
@@ -85,7 +92,9 @@ new Backend14thException(errorCode, customMessage);
 }
 ```
 
-`COMMON_BAD_REQUEST`(`COMMON-001`)는 정의되어 있지만 현재 사용하는 코드는 없습니다.
+`COMMON_BAD_REQUEST`(`COMMON-001`)는 정의되어 있지만 현재 사용하는 코드는 없습니다. 5,6주차에서는 400 요청 값 오류에 `INVALID_INPUT`(`COMMON-003`)만 쓰고, `COMMON_BAD_REQUEST`는 구현할 때 지울 후보입니다.
+
+지금 핸들러는 `@Valid` 검증 실패와 잘못된 쿼리 값을 그 외 `Exception`으로 잡아 500을 내려줍니다. Security 필터에서 나는 401은 `@RestControllerAdvice`까지 오지 않습니다. 5,6주차 구현 때 이 경우들도 명세대로 `ErrorResponse` 형식(400 `INVALID_INPUT`, 401 `UNAUTHORIZED`)으로 내려주도록 처리를 추가해야 합니다.
 
 ## 엔티티
 
