@@ -36,7 +36,7 @@ cd backend
 .\gradlew.bat bootJar    # 테스트 없이 jar만 빌드
 ```
 
-**주의:** 테스트와 빌드는 로컬 MySQL과 `backend/.env`가 필요하고, `ddl-auto: update`로 실제 로컬 DB 스키마를 바꿀 수 있습니다. 환경변수 이름은 `backend/.env.example`에 있습니다.
+**주의:** 테스트와 빌드는 로컬 MySQL과 `backend/.env`가 필요하고, `ddl-auto: update`로 실제 로컬 DB 스키마를 바꿀 수 있습니다.
 
 ### 프론트엔드
 
@@ -100,7 +100,6 @@ com.cotato.backend14th
 ├── backend/           Spring Boot 프로젝트
 │   ├── src/           애플리케이션 코드와 테스트
 │   ├── build.gradle   빌드 설정
-│   ├── .env.example   환경변수 이름 (값 없음)
 │   └── .env           DB 접속 정보 (Git에 올리지 않음)
 └── frontend/          Vite React TypeScript SPA
     ├── src/           화면 코드

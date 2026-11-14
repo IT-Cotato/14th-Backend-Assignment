@@ -3,7 +3,7 @@
 ## 설정 방식
 
 - DB는 MySQL을 사용합니다.
-- 접속 정보는 `backend/.env`에 있고 Git에 올리지 않습니다. 변수 이름은 `backend/.env.example`에 있습니다.
+- 접속 정보는 `backend/.env`에 있고 Git에 올리지 않습니다.
 - `.env`는 작업 디렉터리 기준으로 읽으므로 앱과 테스트는 `backend/`에서 실행합니다.
 - `application.yml`이 `.env`를 불러오고, `application-local.yml`이 다음 환경변수를 참조합니다.
   - `DB_URL`
