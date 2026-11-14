@@ -56,20 +56,21 @@ npx playwright test      # E2E 테스트 (개발 서버 자동 실행)
 
 ```text
 com.cotato.backend14th
-├─ domain/{도메인}/   controller, dto, entity, repository
+├─ domain/{도메인}/   controller, service, dto, entity, repository
 └─ global/
    ├─ common/         BaseEntity, ApiResponse, ErrorResponse, ResponseUtils
    ├─ config/         Cors, Security, Swagger
    └─ exception/      ErrorCode, Backend14thException, GlobalExceptionHandler
 ```
 
-현재 service 계층은 없고, 컨트롤러가 repository를 직접 호출합니다.
+5,6주차부터 Controller → Service → Repository로 작성합니다. 3주차 Book 예제만 service 없이 컨트롤러가 repository를 직접 호출합니다.
+로그아웃한 토큰은 인메모리(토큰 → 만료 시각)로 관리합니다. 서버를 재시작하면 목록이 사라집니다.
 
 ## 5. 코드와 Git 규칙
 
 - Git: minho/basic 기준 작업, develop 대상 작업 금지 → [git-workflow](.claude/rules/git-workflow.md)
-- API: ResponseUtils와 ErrorCode + Backend14thException 사용 → [api](.claude/rules/api.md)
-- 엔티티: BaseEntity 상속, 변경 시 테스트 작성 → [entity](.claude/rules/entity.md)
+- API: `/api` 주소, service 계층, ResponseUtils와 api-spec 8장 ErrorCode 사용 → [api](.claude/rules/api.md)
+- 엔티티: BaseEntity 상속, LAZY와 문자열 Enum, 변경 시 테스트 작성 → [entity](.claude/rules/entity.md)
 
 ## 6. 영구 금지 사항
 
@@ -115,6 +116,6 @@ com.cotato.backend14th
 - [데이터베이스](docs/database.md): DB 설정 방식과 스키마 변경 절차
 - [Git 작업 절차](docs/git-workflow.md): 브랜치, 커밋, PR 절차
 - [API 명세](docs/api-spec.md): 엔드포인트 명세
-- [4주차 하네스 작업](docs/features/week4-harness.md): 이번 제출 정리
+- [4주차 하네스 작업](docs/features/week4-harness.md): 4주차 제출 정리
 - 규칙: [git-workflow](.claude/rules/git-workflow.md), [secrets](.claude/rules/secrets.md), [api](.claude/rules/api.md), [entity](.claude/rules/entity.md)
 - 스킬: [add-domain-api](.claude/skills/add-domain-api/SKILL.md), [pre-pr-check](.claude/skills/pre-pr-check/SKILL.md), [write-feature-doc](.claude/skills/write-feature-doc/SKILL.md)

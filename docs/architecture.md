@@ -39,6 +39,18 @@ com.cotato.backend14th
 
 `BookController`는 생성자로 `BookRepository`를 주입받아 직접 호출합니다.
 
+### 5,6주차부터 적용할 구조
+
+새 도메인(User, StudyPost, StudyPostComment)은 Controller → Service → Repository로 작성합니다.
+
+| 레이어 | 역할 |
+|---|---|
+| Controller | 요청 검증(`@Valid`), service 호출, 응답 반환 |
+| Service | 권한 검사(작성자 확인), 비즈니스 규칙(예: 마감된 글에는 댓글 불가), 트랜잭션 |
+| Repository | DB 접근 |
+
+3주차 Book 예제는 지금 구조 그대로 둡니다.
+
 ## 요청 흐름
 
 ### `GET /hello`
@@ -66,6 +78,9 @@ BookController → BookRepository.save
 ## 현재 설정
 
 - **Security:** 모든 요청을 허용합니다(`permitAll`). 세션은 `STATELESS`이고 CSRF, 폼 로그인, HTTP Basic은 꺼져 있습니다.
+  - 5,6주차에서는 [API 명세](api-spec.md) 3장의 권한(공개, 로그인, 작성자)에 맞게 토큰 인증으로 바꿔야 합니다.
+  - 로그아웃한 토큰은 인메모리(토큰 → 만료 시각)로 관리합니다. 서버를 재시작하면 목록이 사라집니다.
+- **주소:** 5,6주차 API는 `/api`로 시작합니다. 3주차 예제(`/hello`, `/books`)는 예외로 그대로 둡니다.
 - **CORS:** `http://localhost:3000`, `http://localhost:8080`을 허용합니다.
 - **Swagger:** `SwaggerConfig`에서 API 문서 정보를 정의합니다.
 

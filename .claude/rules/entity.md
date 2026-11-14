@@ -10,9 +10,15 @@ paths:
 - ID는 `@GeneratedValue(strategy = GenerationType.IDENTITY)`로 생성합니다.
 - `created_at`, `updated_at` 필드를 엔티티에 다시 선언하지 않습니다.
 
+## 명세 규칙 (`docs/api-spec.md` 2장)
+- 연관관계는 모두 `fetch = FetchType.LAZY`로 설정합니다.
+- Enum은 `@Enumerated(EnumType.STRING)`으로 저장합니다.
+- 비밀번호는 BCrypt로 암호화해서 저장합니다.
+- 명세에 적힌 테이블과 컬럼의 이름과 의미는 바꾸지 않습니다.
+- 컬럼이나 테이블을 추가하면 ERD, `docs/api-spec.md`, PR의 "ERD/문서 변경"에 함께 적습니다.
+
 ## 연관관계
-- 현재 코드에는 연관관계와 fetch 설정이 없습니다.
-- 연관관계를 추가하기 전에 연관 방향과 fetch 전략을 사용자와 정합니다.
+- 연관 방향(단방향/양방향)과 cascade 방식은 추가하기 전에 사용자와 정합니다.
 
 ## 변경 절차
 - 관련 테스트를 함께 작성합니다.
