@@ -1,10 +1,29 @@
-import { Route, Routes } from 'react-router'
+import { Navigate, Route, Routes } from 'react-router'
+import { RequireAuth } from './auth/RequireAuth'
+import { Layout } from './components/Layout'
+import { LoginPage } from './pages/LoginPage'
+import { MyPage } from './pages/MyPage'
+import { SignupPage } from './pages/SignupPage'
+import { StudiesPage } from './pages/StudiesPage'
 
-// 화면은 아직 구현하지 않았습니다. 라우트만 연결해 둔 상태입니다.
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<main className="p-8">14th Frontend</main>} />
+      <Route element={<Layout />}>
+        <Route path="/" element={<Navigate to="/studies" replace />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/studies" element={<StudiesPage />} />
+        <Route
+          path="/mypage"
+          element={
+            <RequireAuth>
+              <MyPage />
+            </RequireAuth>
+          }
+        />
+        <Route path="*" element={<Navigate to="/studies" replace />} />
+      </Route>
     </Routes>
   )
 }
