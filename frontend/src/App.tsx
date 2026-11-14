@@ -5,6 +5,8 @@ import { LoginPage } from './pages/LoginPage'
 import { MyPage } from './pages/MyPage'
 import { SignupPage } from './pages/SignupPage'
 import { StudiesPage } from './pages/StudiesPage'
+import { StudyDetailPage } from './pages/StudyDetailPage'
+import { StudyFormPage } from './pages/StudyFormPage'
 
 function App() {
   return (
@@ -14,6 +16,23 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/studies" element={<StudiesPage />} />
+        <Route
+          path="/studies/new"
+          element={
+            <RequireAuth>
+              <StudyFormPage />
+            </RequireAuth>
+          }
+        />
+        <Route path="/studies/:id" element={<StudyDetailPage />} />
+        <Route
+          path="/studies/:id/edit"
+          element={
+            <RequireAuth>
+              <StudyFormPage />
+            </RequireAuth>
+          }
+        />
         <Route
           path="/mypage"
           element={
