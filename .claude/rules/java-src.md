@@ -1,7 +1,8 @@
 ---
 paths:
-  - "src/**/*.java"
+  - "backend/src/**/*.java"
 ---
+
 
 # 자바 소스 규칙
 
