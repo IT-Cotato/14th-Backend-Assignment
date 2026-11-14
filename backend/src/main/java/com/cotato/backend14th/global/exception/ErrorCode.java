@@ -13,6 +13,12 @@ public enum ErrorCode {
     // COMMON
     COMMON_BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON-001", "잘못된 요청입니다."),
     COMMON_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-002", "서버 내부 오류가 발생했습니다."),
+    INVALID_INPUT(HttpStatus.BAD_REQUEST, "COMMON-003", "요청 값이 올바르지 않아요."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON-004", "토큰이 없거나, 유효하지 않거나, 로그아웃한 토큰이에요."),
+
+    // USER
+    EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER-001", "이미 가입된 이메일이에요."),
+    INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "USER-002", "이메일 또는 비밀번호가 틀려요."),
 
     // BOOK
     BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOK-001", "책을 찾을 수 없습니다.");

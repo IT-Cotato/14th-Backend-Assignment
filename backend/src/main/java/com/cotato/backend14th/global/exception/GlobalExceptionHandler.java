@@ -2,8 +2,11 @@
 package com.cotato.backend14th.global.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.cotato.backend14th.global.common.response.ErrorResponse;
 
@@ -26,6 +29,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(e.getErrorCode().getHttpStatus())
                 .body(ErrorResponse.of(e.getErrorCode(), request));
+    }
+
+    // 요청 값 검증 실패(@Valid), 읽을 수 없는 본문(Enum에 없는 값 등), 잘못된 타입의 파라미터는 400으로 처리해요
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class,
+            HttpMessageNotReadableException.class,
+            MethodArgumentTypeMismatchException.class
+    })
+    public ResponseEntity<ErrorResponse> handleInvalidInput(
+            Exception e, HttpServletRequest request
+    ) {
+        log.warn("[InvalidInput] {} {} | {}",
+                request.getMethod(), request.getRequestURI(), e.getMessage());
+
+        return ResponseEntity
+                .status(ErrorCode.INVALID_INPUT.getHttpStatus())
+                .body(ErrorResponse.of(ErrorCode.INVALID_INPUT, request));
     }
 
     // 그 외 예상치 못한 모든 예외는 500으로 처리해요
