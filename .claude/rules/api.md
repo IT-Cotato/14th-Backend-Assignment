@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/main/java/**/*Controller.java"
+  - "backend/src/main/java/**/*Controller.java"
 ---
 
 # API 컨트롤러 규칙

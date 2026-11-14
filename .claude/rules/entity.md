@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/main/java/**/domain/**/entity/*.java"
+  - "backend/src/main/java/**/domain/**/entity/*.java"
 ---
 
 # 엔티티 규칙

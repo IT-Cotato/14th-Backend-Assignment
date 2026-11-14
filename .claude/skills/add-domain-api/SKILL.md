@@ -6,6 +6,7 @@ description: 이 프로젝트에 새 도메인이나 API를 추가할 때 사용
 # 도메인 API 추가
 
 `domain/book/`을 기준 예제로 삼아 다음 순서로 진행합니다.
+아래의 `domain/` 경로는 모두 `backend/src/main/java/com/cotato/backend14th/domain/`을 뜻하고, 테스트는 `backend/src/test/java/` 아래에 둡니다. Gradle 명령은 `backend/`에서 실행합니다.
 
 1. `docs/conventions.md`와 `domain/book/`의 코드를 읽습니다.
 2. `domain/{도메인}/` 아래에 `controller`, `dto`, `entity`, `repository` 패키지를 만듭니다.
