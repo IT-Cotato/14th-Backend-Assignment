@@ -11,7 +11,7 @@
   - 도메인: User, StudyPost, StudyPostComment
 - **구현 기준:** API, 데이터 모델, 권한, 에러 코드, 프론트 화면은 반드시 [docs/api-spec.md](docs/api-spec.md)를 먼저 읽고 따릅니다. 이 문서가 유일한 요구사항이며, 없는 내용은 추측해서 추가하지 않고 사용자에게 묻습니다. ERD는 [docs/erd/](docs/erd/)에 있습니다.
 - 모노레포입니다. `backend/`에 Spring Boot API, `frontend/`에 Vite React SPA가 있습니다.
-- 현재 구현된 API는 3주차 예제(`GET /hello`, `GET /books/{id}`, `POST /books`)뿐입니다.
+- [API 명세](docs/api-spec.md)의 13개 API(인증, 모집글, 댓글)와 화면이 구현되어 있습니다. 3주차 예제(`GET /hello`, `GET /books/{id}`, `POST /books`)도 그대로 둡니다.
 - 기본 포트: 백엔드 8081 (`local` 프로필, 환경변수 `SERVER_PORT`로 변경 가능), 프론트 3000
 - Swagger: `http://localhost:8081/swagger-ui/index.html`
 
@@ -46,9 +46,14 @@ cd backend
 cd frontend
 npm install              # 의존성 설치
 npm run dev              # 개발 서버 (http://localhost:3000)
-npm run build            # 타입 검사 + 빌드
-npx playwright test      # E2E 테스트 (개발 서버 자동 실행)
+npm run build            # 타입 검사 + 빌드 (e2e/ 타입 검사 포함)
+npm run lint             # oxlint
+npx playwright install chromium   # 처음 한 번: E2E용 브라우저 설치
+npx playwright test      # E2E 테스트 (프론트 개발 서버 자동 실행)
+npx playwright show-report        # 마지막 E2E 리포트 열기
 ```
+
+**E2E 주의:** 백엔드가 `http://localhost:8081`에 떠 있어야 합니다. 다른 주소면 환경변수 `E2E_API_URL`로 바꿉니다. 백엔드 코드를 바꿨다면 서버를 재시작한 뒤 실행합니다. 테스트 데이터(`e2e-` 계정, 글, 댓글)는 로컬 DB에 남습니다.
 
 ## 4. 패키지 구조 요약
 
@@ -63,6 +68,8 @@ com.cotato.backend14th
    └─ exception/      ErrorCode, Backend14thException, GlobalExceptionHandler
 ```
 
+도메인: `auth`, `user`, `studypost`, `comment`(StudyPostComment), `book`(3주차 예제). 인증은 `global/security`(JWT 필터, 엔트리 포인트, 로그아웃 토큰 목록)에 있습니다.
+
 5,6주차부터 Controller → Service → Repository로 작성합니다. 3주차 Book 예제만 service 없이 컨트롤러가 repository를 직접 호출합니다.
 로그아웃한 토큰은 인메모리(토큰 → 만료 시각)로 관리합니다. 서버를 재시작하면 목록이 사라집니다.
 
@@ -71,6 +78,8 @@ com.cotato.backend14th
 - Git: minho/basic 기준 작업, develop 대상 작업 금지 → [git-workflow](.claude/rules/git-workflow.md)
 - API: `/api` 주소, service 계층, ResponseUtils와 api-spec 8장 ErrorCode 사용 → [api](.claude/rules/api.md)
 - 엔티티: BaseEntity 상속, LAZY와 문자열 Enum, 변경 시 테스트 작성 → [entity](.claude/rules/entity.md)
+- 프론트: 라벨과 역할, 에러 메시지·로딩 표시, effect 안의 setState 금지 → [frontend](.claude/rules/frontend.md)
+- E2E: 역할·라벨 셀렉터, 고정 대기 금지, 테스트 독립, `.ts` 확장자 import → [e2e](.claude/rules/e2e.md)
 
 ## 6. 영구 금지 사항
 
@@ -116,5 +125,6 @@ com.cotato.backend14th
 - [Git 작업 절차](docs/git-workflow.md): 브랜치, 커밋, PR 절차
 - [API 명세](docs/api-spec.md): 엔드포인트 명세
 - [4주차 하네스 작업](docs/features/week4-harness.md): 4주차 제출 정리
-- 규칙: [git-workflow](.claude/rules/git-workflow.md), [secrets](.claude/rules/secrets.md), [api](.claude/rules/api.md), [entity](.claude/rules/entity.md)
+- [5,6주차 스터디 플랫폼](docs/features/122-study-platform.md): 5,6주차 제출 정리
+- 규칙: [git-workflow](.claude/rules/git-workflow.md), [secrets](.claude/rules/secrets.md), [api](.claude/rules/api.md), [entity](.claude/rules/entity.md), [frontend](.claude/rules/frontend.md), [e2e](.claude/rules/e2e.md)
 - 스킬: [add-domain-api](.claude/skills/add-domain-api/SKILL.md), [pre-pr-check](.claude/skills/pre-pr-check/SKILL.md), [write-feature-doc](.claude/skills/write-feature-doc/SKILL.md)

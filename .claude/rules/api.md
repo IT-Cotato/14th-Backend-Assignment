@@ -22,6 +22,13 @@ paths:
 ## 요청 검증
 - 요청 DTO에 검증 어노테이션을 붙이고 컨트롤러 파라미터에 `@Valid`를 붙입니다.
 - 검증 실패는 `INVALID_INPUT`(400)입니다. `COMMON_BAD_REQUEST`는 쓰지 않습니다.
+- 쿼리 파라미터는 `@RequestParam`에 `@Min`, `@Max`를 직접 붙입니다. 컨트롤러에 `@Validated`를 붙이지 않습니다. (Spring 6.1+는 MVC가 직접 검증해서 `HandlerMethodValidationException`을 던지고, `GlobalExceptionHandler`가 400으로 처리합니다. `@Validated`를 붙이면 AOP 검증이 겹치고 처리하지 않는 `ConstraintViolationException`이 나서 500이 될 수 있습니다)
+- Enum 쿼리 파라미터(`StudyStatus status` 등)에 없는 값이 오면 `MethodArgumentTypeMismatchException` → 400입니다.
+
+## 로그인 사용자
+- 사용자 ID는 `@Parameter(hidden = true) @AuthenticationPrincipal Long userId`로 받습니다.
+- 공개 API에서도 유효한 토큰이 있으면 userId가 들어오고, 없으면 null입니다. (`isAuthor` 판단에 사용)
+- `isAuthor` 같은 boolean 필드는 `@JsonProperty("isAuthor")`를 붙여 이름을 고정합니다.
 
 ## 예외
 - 상수 이름과 응답 code는 `docs/api-spec.md` 8장의 값을 그대로 씁니다.

@@ -9,21 +9,22 @@ com.cotato.backend14th
 ├─ Backend14thApplication   앱 시작점, JPA Auditing 활성화
 ├─ HelloController          GET /hello
 ├─ domain/
-│  └─ book/
-│     ├─ controller/        BookController
-│     ├─ dto/               BookRequest, BookResponse
-│     ├─ entity/            Book
-│     └─ repository/        BookRepository
+│  ├─ auth/                 AuthController, AuthService, 회원가입·로그인 DTO
+│  ├─ user/                 UserController, UserService, User, Part, MyInfoResponse, AuthorResponse
+│  ├─ studypost/            StudyPostController, StudyPostService, StudyPost, StudyStatus, StudyPostRepository
+│  ├─ comment/              StudyPostCommentController, StudyPostCommentService, StudyPostComment, StudyPostCommentRepository
+│  └─ book/                 3주차 예제 (BookController, Book, BookRepository)
 └─ global/
    ├─ common/entity/        BaseEntity
-   ├─ common/response/      ApiResponse, ErrorResponse, ResponseUtils
+   ├─ common/response/      ApiResponse, ErrorResponse, ResponseUtils, PageResponse
    ├─ config/               CorsConfig, SecurityConfig, SwaggerConfig
-   └─ exception/            ErrorCode, Backend14thException, GlobalExceptionHandler
+   ├─ exception/            ErrorCode, Backend14thException, GlobalExceptionHandler
+   └─ security/             JwtTokenProvider, JwtAuthenticationFilter, JwtAuthenticationEntryPoint, TokenBlacklist
 ```
 
 ## 패키지 역할
 
-- **`domain/`:** 도메인별 코드를 둡니다. 현재 도메인은 `book` 하나입니다.
+- **`domain/`:** 도메인별 코드를 둡니다. 5,6주차 도메인은 Controller → Service → Repository 구조이고, 3주차 `book`만 service가 없습니다.
 - **`global/common/`:** 공통 엔티티와 응답 형식을 둡니다.
 - **`global/config/`:** CORS, Security, Swagger 설정을 둡니다.
 - **`global/exception/`:** 에러 코드, 예외 클래스, 전역 예외 처리를 둡니다.
@@ -31,17 +32,11 @@ com.cotato.backend14th
 
 ## 레이어
 
-| 레이어 | 상태 | 역할 |
-|---|---|---|
-| Controller | 있음 | 요청을 받고, repository를 호출하고, 엔티티를 응답 DTO로 변환해 반환 |
-| Service | **현재 없음** | `@Service`와 service 패키지가 없음 |
-| Repository | 있음 | `JpaRepository<Book, Long>`을 상속해 DB에 접근 |
+3주차 `BookController`는 service 없이 `BookRepository`를 직접 호출합니다.
 
-`BookController`는 생성자로 `BookRepository`를 주입받아 직접 호출합니다.
+### 5,6주차 구조
 
-### 5,6주차부터 적용할 구조
-
-새 도메인(User, StudyPost, StudyPostComment)은 Controller → Service → Repository로 작성합니다.
+5,6주차 도메인(auth, user, studypost, comment)은 Controller → Service → Repository로 작성했습니다.
 
 | 레이어 | 역할 |
 |---|---|
@@ -77,8 +72,10 @@ BookController → BookRepository.save
 
 ## 현재 설정
 
-- **Security:** 모든 요청을 허용합니다(`permitAll`). 세션은 `STATELESS`이고 CSRF, 폼 로그인, HTTP Basic은 꺼져 있습니다.
-  - 5,6주차에서는 [API 명세](api-spec.md) 3장의 권한(공개, 로그인, 작성자)에 맞게 토큰 인증으로 바꿔야 합니다.
+- **Security:** JWT(accessToken) 인증입니다. 세션은 `STATELESS`이고 CSRF, 폼 로그인, HTTP Basic은 꺼져 있습니다.
+  - 공개: 회원가입, 로그인, 모집글 목록·상세, 댓글 목록, 3주차 예제, Swagger. 나머지는 로그인이 필요합니다.
+  - 작성자 확인(403)은 각 service에서 합니다.
+  - 공개 API도 유효한 토큰이 있으면 사용자를 식별합니다. (`isAuthor`)
   - 로그아웃한 토큰은 인메모리(토큰 → 만료 시각)로 관리합니다. 서버를 재시작하면 목록이 사라집니다.
 - **주소:** 5,6주차 API는 `/api`로 시작합니다. 3주차 예제(`/hello`, `/books`)는 예외로 그대로 둡니다.
 - **CORS:** `http://localhost:3000`, `http://localhost:8080`을 허용합니다.

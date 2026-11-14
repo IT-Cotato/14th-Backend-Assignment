@@ -20,6 +20,13 @@ paths:
 ## 연관관계
 - 연관 방향(단방향/양방향)과 cascade 방식은 추가하기 전에 사용자와 정합니다.
 
+## 조회와 삭제
+- 목록에서 연관 엔티티를 쓰면 `join fetch`로 함께 가져오고, 개수는 `group by` 쿼리 한 번으로 셉니다. (N+1 금지)
+- 페이지 쿼리에 `join fetch`를 쓰면 `countQuery`를 따로 적습니다.
+- 자식을 JPQL 벌크 삭제(`@Modifying`)한 뒤 부모를 지울 때는 `clearAutomatically`를 쓰지 않습니다. (부모가 detach됩니다)
+- 테스트에서 자식을 저장한 같은 영속성 컨텍스트로 벌크 삭제를 검증하면 `TransientPropertyValueException`이 납니다. `flush()` 뒤에 `clear()`해서 실제 요청과 같은 상태로 만듭니다.
+- 리포지토리 쿼리 테스트는 `@DataJpaTest` + `@AutoConfigureTestDatabase(replace = NONE)`(로컬 MySQL, 롤백)로 작성하고, UUID로 데이터 범위를 좁힙니다.
+
 ## 변경 절차
 - 관련 테스트를 함께 작성합니다.
 - 변경 전에 추가, 삭제, 변경되는 컬럼과 기존 데이터에 미치는 영향을 사용자에게 알립니다.
