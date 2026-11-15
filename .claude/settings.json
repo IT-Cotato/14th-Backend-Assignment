@@ -1,20 +1,23 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./gradlew compileJava:*)",
-      "Bash(./gradlew build:*)",
-      "Bash(./gradlew test:*)"
+      "Bash(./backend/gradlew -p backend compileJava:*)",
+      "Bash(./backend/gradlew -p backend build:*)",
+      "Bash(./backend/gradlew -p backend test:*)",
+      "PowerShell(./backend/gradlew -p backend compileJava:*)",
+      "PowerShell(./backend/gradlew -p backend build:*)",
+      "PowerShell(./backend/gradlew -p backend test:*)"
     ],
     "deny": [
-      "Read(./.env)",
-      "Edit(./.env)",
-      "Write(./.env)"
+      "Read(**/.env)",
+      "Edit(**/.env)",
+      "Write(**/.env)"
     ]
   },
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Bash|PowerShell",
         "hooks": [
           {
             "type": "command",

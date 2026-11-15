@@ -2,6 +2,8 @@
 
 ## 패키지 구조 (도메인형)
 
+코드 위치: `backend/src/main/java/com/cotato/backend14th/`
+
 ```
 com.cotato.backend14th/
 ├── Backend14thApplication.java     # @EnableJpaAuditing
@@ -94,9 +96,11 @@ Service/Controller에서 throw new Backend14thException(ErrorCode.XXX)
 
 | 파일 | 내용 |
 | --- | --- |
-| `application.yml` | 공통 설정. `.env` 로드(`spring.config.import`), 프로필 선택(기본 `local`) |
-| `application-local.yml` | local 전용. DB 연결(`${DB_URL}` 등), `ddl-auto: update`, `show-sql: true` |
-| `.env` | 실제 값. Git에 올리지 않음 |
+| `backend/src/main/resources/application.yml` | 공통 설정. `.env` 로드(`spring.config.import`), 프로필 선택(기본 `local`) |
+| `backend/src/main/resources/application-local.yml` | local 전용. DB 연결(`${DB_URL}` 등), `ddl-auto: update`, `show-sql: true` |
+| `backend/.env` | 실제 값. Git에 올리지 않음 |
+
+- `spring.config.import`는 `.env`를 실행 디렉터리 기준으로 읽는다. Gradle을 `backend/`에서 실행하므로 `.env`는 `backend/`에 둔다.
 
 `.env`에 필요한 키 (값은 각자 로컬 환경에 맞게 채운다)
 
