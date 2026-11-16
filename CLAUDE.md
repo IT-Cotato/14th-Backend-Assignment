@@ -48,7 +48,7 @@ Gradle은 `-p backend`로 프로젝트 폴더를 지정한다. (루트에는 gra
 ## 영구 금지
 - `.env`(`backend/.env`, `frontend/.env` 등)를 읽거나 수정하거나 커밋하지 않는다. yml에는 실제 값 대신 `${KEY}` 참조만 쓴다.
 - `develop`(default), `이름/basic` 브랜치에 직접 push하지 않는다. force push도 하지 않는다. PR base는 `이름/basic`이다.
-- `SecurityConfig`의 `anyRequest().permitAll()`을 임의로 바꾸지 않는다. (로그인 기능이 없어 모든 API가 401이 된다)
+- SecurityConfig의 접근 권한은 docs/api-spec.md의 권한(공개/로그인/작성자) 표를 따른다. 표에 없는 경로를 임의로 열지 않는다.
 - CORS에서 `allowedOrigins("*")`와 `allowCredentials(true)`를 함께 쓰지 않는다.
 - `RuntimeException`을 직접 던지지 않는다. `Backend14thException(ErrorCode.XXX)`를 쓴다.
 - Entity를 API 응답으로 직접 반환하지 않는다. DTO로 변환한다.
