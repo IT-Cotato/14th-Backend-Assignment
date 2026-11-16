@@ -67,3 +67,11 @@ export function getErrorMessage(error: unknown): string {
   }
   return '알 수 없는 오류가 발생했습니다.'
 }
+
+// 서버 ErrorResponse의 code (예: "STUDY-003"). 없으면 null
+export function getErrorCode(error: unknown): string | null {
+  if (axios.isAxiosError<ErrorResponse>(error)) {
+    return error.response?.data?.code ?? null
+  }
+  return null
+}

@@ -4,6 +4,7 @@ import { getErrorMessage } from '../api/client'
 import { deleteStudyPost, formatDateTime, getStudyPost, updateStudyPost } from '../api/studyPosts'
 import type { StudyPostDetail } from '../api/studyPosts'
 import { useAuth } from '../auth/AuthContext'
+import { CommentSection } from '../components/CommentSection'
 import { ErrorMessage } from '../components/ErrorMessage'
 import { StatusBadge } from '../components/StatusBadge'
 import { cardClass } from '../components/styles'
@@ -134,13 +135,7 @@ export function StudyDetailPage() {
         )}
       </article>
 
-      {/* 댓글(스터디 신청)은 다음 단계에서 구현 */}
-      <section aria-labelledby="comments-title" className={cardClass}>
-        <h2 id="comments-title" className="text-lg font-semibold text-gray-900">
-          댓글
-        </h2>
-        <p className="mt-2 text-sm text-gray-500">댓글 기능은 준비 중입니다.</p>
-      </section>
+      <CommentSection postId={post.postId} studyStatus={post.studyStatus} />
     </div>
   )
 }
