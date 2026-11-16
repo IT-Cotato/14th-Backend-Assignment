@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.cotato.backend14th.global.common.response.ErrorResponse;
@@ -53,6 +54,17 @@ public class GlobalExceptionHandler {
     ) {
         log.warn("[TypeMismatchException] {} {} | name={} | value={}",
                 request.getMethod(), request.getRequestURI(), e.getName(), e.getValue());
+
+        return invalidInput(request);
+    }
+
+    // @RequestParam 검증 실패(page < 0, size > 100 등)는 400 INVALID_INPUT으로 처리해요
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> handleHandlerMethodValidation(
+            HandlerMethodValidationException e, HttpServletRequest request
+    ) {
+        log.warn("[HandlerMethodValidationException] {} {} | {}",
+                request.getMethod(), request.getRequestURI(), e.getMessage());
 
         return invalidInput(request);
     }
