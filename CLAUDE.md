@@ -44,6 +44,7 @@ Gradle은 `-p backend`로 프로젝트 폴더를 지정한다. (루트에는 gra
 - 새 도메인은 `domain/{도메인}/controller|service|repository|entity|dto` 구조로 만든다.
 - 에러는 `global/exception/ErrorCode` enum 하나에 `도메인-번호` 형식으로 추가한다. (예: `STUDY-001`)
 - `HelloController`(1주차), `Book`(2~3주차)은 연습용이다. `BookController`가 Repository를 직접 호출하는 건 예외이고, 새 코드에서 따라 하지 않는다.
+- 확인용으로 서버(bootRun, dev)를 띄웠다면 작업이 끝날 때 반드시 종료하고, 8080·3000 포트가 비었는지 확인한다. 백그라운드 작업만 멈추면 프로세스가 남을 수 있으니 PID로 확인한다.
 
 ## 영구 금지
 - `.env`(`backend/.env`, `frontend/.env` 등)를 읽거나 수정하거나 커밋하지 않는다. yml에는 실제 값 대신 `${KEY}` 참조만 쓴다.
