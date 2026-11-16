@@ -1,6 +1,6 @@
 # 파일별 템플릿
 
-`<Name>`은 파스칼 케이스 도메인 이름(예: `Applicant`), `<name>`은 소문자(예: `applicant`), `<NAME>`은 대문자(예: `APPLICANT`)다. 기준 코드는 `domain/book/`이다.
+`<Name>`은 파스칼 케이스 도메인 이름(예: `Applicant`), `<name>`은 소문자(예: `applicant`), `<NAME>`은 대문자(예: `APPLICANT`)다. 기준 코드는 `domain/book/`이지만, book에는 Service가 없으므로 service와 controller는 아래 템플릿을 따른다.
 
 ## entity/<Name>.java
 
@@ -69,35 +69,55 @@ public class <Name>Response {
 }
 ```
 
+## service/<Name>Service.java
+
+```java
+package com.cotato.backend14th.domain.<name>.service;
+
+@Service
+@RequiredArgsConstructor
+public class <Name>Service {
+
+    private final <Name>Repository <name>Repository;
+
+    @Transactional(readOnly = true)
+    public <Name>Response get<Name>(Long id) {
+        <Name> <name> = <name>Repository.findById(id)
+                .orElseThrow(() -> new Backend14thException(ErrorCode.<NAME>_NOT_FOUND));
+        return new <Name>Response(<name>.getId() /* , 나머지 필드 */);
+    }
+
+    @Transactional
+    public <Name>Response create<Name>(<Name>Request request) {
+        <Name> saved = <name>Repository.save(new <Name>(null /* , request의 필드 */));
+        return new <Name>Response(saved.getId() /* , 나머지 필드 */);
+    }
+}
+```
+
 ## controller/<Name>Controller.java
 
 ```java
 @Tag(name = "<Name> API", description = "<설명>")
 @RestController
 @RequestMapping("/<복수형>")
+@RequiredArgsConstructor
 public class <Name>Controller {
 
-    private final <Name>Repository <name>Repository;
-
-    public <Name>Controller(<Name>Repository <name>Repository) {
-        this.<name>Repository = <name>Repository;
-    }
+    private final <Name>Service <name>Service;
 
     @Operation(summary = "<설명> 단건 조회", description = "ID로 조회해요.")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<<Name>Response>> get<Name>(
             @Parameter(description = "조회할 ID", example = "1")
             @PathVariable Long id) {
-        <Name> <name> = <name>Repository.findById(id)
-                .orElseThrow(() -> new Backend14thException(ErrorCode.<NAME>_NOT_FOUND));
-        return ResponseUtils.ok(new <Name>Response(<name>.getId() /* , 나머지 필드 */));
+        return ResponseUtils.ok(<name>Service.get<Name>(id));
     }
 
     @Operation(summary = "<설명> 등록", description = "새로 등록해요.")
     @PostMapping
     public ResponseEntity<ApiResponse<<Name>Response>> create<Name>(@RequestBody <Name>Request request) {
-        <Name> saved = <name>Repository.save(new <Name>(null /* , request의 필드 */));
-        return ResponseUtils.created(new <Name>Response(saved.getId() /* , 나머지 필드 */));
+        return ResponseUtils.created(<name>Service.create<Name>(request));
     }
 }
 ```
