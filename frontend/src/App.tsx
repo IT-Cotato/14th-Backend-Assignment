@@ -5,6 +5,9 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import MyPage from './pages/MyPage'
 import StudyListPage from './pages/StudyListPage'
+import StudyFormPage from './pages/StudyFormPage'
+import StudyDetailPage from './pages/StudyDetailPage'
+
 
 function Header() {
   const navigate = useNavigate()
@@ -57,6 +60,9 @@ export default function App() {
       <>
         <Header />
         <Routes>
+            <Route path="/studies/new" element={<StudyFormPage />} />
+            <Route path="/studies/:id" element={<StudyDetailPage />} />
+            <Route path="/studies/:id/edit" element={<StudyFormPage />} />
           <Route path="/" element={<StudyListPage />} />
           <Route path="/studies" element={<StudyListPage />} />
           <Route path="/login" element={<LoginPage />} />

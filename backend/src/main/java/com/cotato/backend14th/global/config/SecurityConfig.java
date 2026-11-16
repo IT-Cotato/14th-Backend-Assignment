@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,6 +46,13 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
                         .requestMatchers("/api/users/me", "/api/auth/logout").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/study-posts").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/study-posts/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/study-posts/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/study-posts/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/comments/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()
+
                         .anyRequest().permitAll()
                 )
                 .exceptionHandling(ex -> ex
