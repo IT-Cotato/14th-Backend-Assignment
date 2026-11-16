@@ -45,4 +45,12 @@ public class StudyPostComment extends BaseEntity {
     public static StudyPostComment create(String content, User user, StudyPost studyPost) {
         return new StudyPostComment(content, user, studyPost);
     }
+
+    public void update(String content) {
+        this.content = content;
+    }
+
+    public boolean isAuthor(Long userId) {
+        return userId != null && userId.equals(user.getId());
+    }
 }
