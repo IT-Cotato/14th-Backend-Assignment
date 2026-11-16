@@ -1,20 +1,31 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./gradlew compileJava:*)",
-      "Bash(./gradlew build:*)",
-      "Bash(./gradlew test:*)"
+      "Bash(./backend/gradlew -p backend compileJava:*)",
+      "Bash(./backend/gradlew -p backend build:*)",
+      "Bash(./backend/gradlew -p backend test:*)",
+      "PowerShell(./backend/gradlew -p backend compileJava:*)",
+      "PowerShell(./backend/gradlew -p backend build:*)",
+      "PowerShell(./backend/gradlew -p backend test:*)",
+      "Bash(npm --prefix frontend run dev:*)",
+      "Bash(npm --prefix frontend run build:*)",
+      "Bash(npm --prefix frontend run lint:*)",
+      "Bash(npm --prefix frontend run test:e2e:*)",
+      "PowerShell(npm --prefix frontend run dev:*)",
+      "PowerShell(npm --prefix frontend run build:*)",
+      "PowerShell(npm --prefix frontend run lint:*)",
+      "PowerShell(npm --prefix frontend run test:e2e:*)"
     ],
     "deny": [
-      "Read(./.env)",
-      "Edit(./.env)",
-      "Write(./.env)"
+      "Read(**/.env)",
+      "Edit(**/.env)",
+      "Write(**/.env)"
     ]
   },
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Bash|PowerShell",
         "hooks": [
           {
             "type": "command",

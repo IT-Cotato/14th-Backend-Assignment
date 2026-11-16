@@ -38,3 +38,12 @@ out/
 
 ### environment ###
 .env
+
+### frontend ###
+node_modules/
+dist/
+playwright-report/
+test-results/
+
+### AI 작업 기록 ###
+.dev/scratchpad/
