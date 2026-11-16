@@ -77,8 +77,9 @@ Service/Controller에서 throw new Backend14thException(ErrorCode.XXX)
 ### ErrorCode 규칙
 
 - 모든 에러 코드는 `ErrorCode` enum 하나에 모은다.
-- 코드 형식: `도메인 prefix-세 자리 번호` (예: `COMMON-001`, `BOOK-001`, `APPLICANT-001`)
-- 상수 이름: `도메인_상황` (예: `APPLICANT_NOT_FOUND`)
+- 코드 형식: `도메인 prefix-세 자리 번호` (예: `COMMON-001`, `BOOK-001`, `STUDY-001`)
+- 상수 이름: `도메인_상황` (예: `STUDY_POST_NOT_FOUND`)
+    - 예외: `INVALID_INPUT`, `UNAUTHORIZED`처럼 과제가 이름을 정한 상수는 도메인 접두어 규칙의 예외로, 과제 이름을 그대로 쓴다. (`docs/api-spec.md` 에러 코드 표 참고)
 - 새 상수는 마지막 `;` **앞에** 추가한다.
 
 | 코드 | 상수 | HTTP |

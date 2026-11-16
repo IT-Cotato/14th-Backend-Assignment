@@ -6,7 +6,13 @@
       "Bash(./backend/gradlew -p backend test:*)",
       "PowerShell(./backend/gradlew -p backend compileJava:*)",
       "PowerShell(./backend/gradlew -p backend build:*)",
-      "PowerShell(./backend/gradlew -p backend test:*)"
+      "PowerShell(./backend/gradlew -p backend test:*)",
+      "Bash(npm --prefix frontend run dev:*)",
+      "Bash(npm --prefix frontend run build:*)",
+      "Bash(npm --prefix frontend run lint:*)",
+      "PowerShell(npm --prefix frontend run dev:*)",
+      "PowerShell(npm --prefix frontend run build:*)",
+      "PowerShell(npm --prefix frontend run lint:*)"
     ],
     "deny": [
       "Read(**/.env)",
