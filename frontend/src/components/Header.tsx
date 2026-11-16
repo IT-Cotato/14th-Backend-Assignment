@@ -23,6 +23,14 @@ export function Header() {
         <Link to="/" className="text-lg font-bold text-indigo-600">
           COTATO 스터디
         </Link>
+        <nav aria-label="스터디 메뉴" className="flex flex-wrap items-center gap-1">
+          <Link to="/studies" className={menuClass}>
+            스터디 목록
+          </Link>
+          <Link to="/studies/new" className={menuClass}>
+            글쓰기
+          </Link>
+        </nav>
         {!initializing && (
           <nav aria-label="사용자 메뉴" className="flex flex-wrap items-center gap-1">
             {user ? (
