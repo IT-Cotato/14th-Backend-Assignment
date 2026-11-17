@@ -1,11 +1,14 @@
 package com.cotato.backend14th.domain.auth.service;
 
+import com.cotato.backend14th.domain.auth.dto.LoginRequest;
+import com.cotato.backend14th.domain.auth.dto.LoginResponse;
 import com.cotato.backend14th.domain.auth.dto.SignupRequest;
 import com.cotato.backend14th.domain.auth.dto.SignupResponse;
 import com.cotato.backend14th.domain.user.entity.User;
 import com.cotato.backend14th.domain.user.repository.UserRepository;
 import com.cotato.backend14th.global.exception.Backend14thException;
 import com.cotato.backend14th.global.exception.ErrorCode;
+import com.cotato.backend14th.global.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
     // DB 작업 트랜잭션으로 수행
     @Transactional
@@ -40,6 +44,20 @@ public class AuthService {
 
         User saved = userRepository.save(user);
         return new SignupResponse(saved.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public LoginResponse login(LoginRequest request){
+
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new Backend14thException(ErrorCode.INVALID_CREDENTIALS));
+
+        // 입력한 비밀번호가 저장된 암호화 값과 맞는지 true 혹은 false로 알려주는 메서드
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            throw new Backend14thException(ErrorCode.INVALID_CREDENTIALS);
+        }
+
+        return new LoginResponse(jwtProvider.createToken(user.getId()));
+
     }
 
 }

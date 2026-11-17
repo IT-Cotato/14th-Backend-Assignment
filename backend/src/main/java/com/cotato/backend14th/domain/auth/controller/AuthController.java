@@ -1,5 +1,7 @@
 package com.cotato.backend14th.domain.auth.controller;
 
+import com.cotato.backend14th.domain.auth.dto.LoginRequest;
+import com.cotato.backend14th.domain.auth.dto.LoginResponse;
 import com.cotato.backend14th.domain.auth.dto.SignupRequest;
 import com.cotato.backend14th.domain.auth.dto.SignupResponse;
 import com.cotato.backend14th.domain.auth.service.AuthService;
@@ -29,5 +31,11 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<SignupResponse>> signup(@Valid @RequestBody SignupRequest request){
         return ResponseUtils.created(authService.signup(request));
+    }
+
+    @Operation(summary = "로그인", description = "이메일과 비밀번호로 로그인하고 토큰을 받아요.")
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request){
+        return ResponseUtils.ok(authService.login(request));
     }
 }
