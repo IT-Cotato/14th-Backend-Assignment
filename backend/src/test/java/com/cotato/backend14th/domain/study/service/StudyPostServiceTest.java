@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,6 +29,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.cotato.backend14th.domain.comment.repository.StudyPostCommentRepository;
+import com.cotato.backend14th.domain.comment.repository.StudyPostCommentRepository.PostCommentCount;
 import com.cotato.backend14th.domain.study.dto.StudyPostCreateRequest;
 import com.cotato.backend14th.domain.study.dto.StudyPostDetailResponse;
 import com.cotato.backend14th.domain.study.dto.StudyPostIdResponse;
@@ -53,10 +57,27 @@ class StudyPostServiceTest {
     private StudyPostRepository studyPostRepository;
 
     @Mock
+    private StudyPostCommentRepository commentRepository;
+
+    @Mock
     private UserRepository userRepository;
 
     @InjectMocks
     private StudyPostService studyPostService;
+
+    private static PostCommentCount commentCount(Long postId, long count) {
+        return new PostCommentCount() {
+            @Override
+            public Long getPostId() {
+                return postId;
+            }
+
+            @Override
+            public long getCommentCount() {
+                return count;
+            }
+        };
+    }
 
     private static void assertErrorCode(ThrowingCallable callable, ErrorCode expected) {
         assertThatThrownBy(callable)
@@ -125,6 +146,7 @@ class StudyPostServiceTest {
             // 공백은 제거하고, '!' → '!!', '%' → '!%', '_' → '!_' 로 바뀐다
             given(studyPostRepository.search(eq("100!%!_a!!b"), eq(StudyStatus.RECRUITING), eq(Part.BE), any(Pageable.class)))
                     .willReturn(new PageImpl<>(List.of(post), PageRequest.of(1, 5), 6));
+            given(commentRepository.countByPostIds(List.of(POST_ID))).willReturn(List.of(commentCount(POST_ID, 3L)));
 
             PageResponse<StudyPostSummaryResponse> response = studyPostService.getList(
                     "  100%_a!b  ", StudyStatus.RECRUITING, Part.BE, 1, 5);
@@ -137,8 +159,26 @@ class StudyPostServiceTest {
             assertThat(item.getPostId()).isEqualTo(POST_ID);
             assertThat(item.getAuthor().getNickname()).isEqualTo("nick1");
             assertThat(item.getAuthor().getPart()).isEqualTo(Part.BE);
-            // 댓글 기능 구현 전이라 댓글 수는 항상 0이다
-            assertThat(item.getCommentCount()).isZero();
+            assertThat(item.getCommentCount()).isEqualTo(3L);
+        }
+
+        @Test
+        @DisplayName("댓글이 없는 글의 댓글 수는 0이고, 글 여러 개의 댓글 수를 쿼리 한 번으로 센다")
+        void countsCommentsInOneQueryAndDefaultsToZero() {
+            StudyPost withComments = postBy(userWithId(AUTHOR_ID));
+            StudyPost withoutComments = postBy(userWithId(AUTHOR_ID));
+            ReflectionTestUtils.setField(withoutComments, "id", POST_ID + 1);
+            given(studyPostRepository.search(isNull(), isNull(), isNull(), any(Pageable.class)))
+                    .willReturn(new PageImpl<>(List.of(withComments, withoutComments)));
+            // 댓글이 없는 글(POST_ID + 1)은 집계 결과에 나타나지 않는다
+            given(commentRepository.countByPostIds(List.of(POST_ID, POST_ID + 1)))
+                    .willReturn(List.of(commentCount(POST_ID, 2L)));
+
+            PageResponse<StudyPostSummaryResponse> response = studyPostService.getList(null, null, null, 0, 10);
+
+            assertThat(response.getContent()).extracting(StudyPostSummaryResponse::getCommentCount)
+                    .containsExactly(2L, 0L);
+            verify(commentRepository).countByPostIds(List.of(POST_ID, POST_ID + 1));
         }
 
         @Test
@@ -152,6 +192,8 @@ class StudyPostServiceTest {
 
             verify(studyPostRepository, org.mockito.Mockito.times(2))
                     .search(isNull(), isNull(), isNull(), any(Pageable.class));
+            // 결과가 없으면 댓글 수를 조회하지 않는다
+            verifyNoInteractions(commentRepository);
         }
 
         @Test
@@ -288,14 +330,17 @@ class StudyPostServiceTest {
     class Delete {
 
         @Test
-        @DisplayName("작성자는 삭제할 수 있다")
-        void authorCanDelete() {
+        @DisplayName("작성자는 삭제할 수 있고, 댓글을 먼저 지운 뒤 글을 삭제한다")
+        void authorCanDeleteAndCommentsAreDeletedFirst() {
             StudyPost post = postBy(userWithId(AUTHOR_ID));
             given(studyPostRepository.findWithUserById(POST_ID)).willReturn(Optional.of(post));
 
             studyPostService.delete(POST_ID, AUTHOR_ID);
 
-            verify(studyPostRepository).delete(post);
+            // 댓글이 글을 참조(FK)하므로 순서가 바뀌면 삭제가 실패한다
+            InOrder order = inOrder(commentRepository, studyPostRepository);
+            order.verify(commentRepository).deleteByStudyPostId(POST_ID);
+            order.verify(studyPostRepository).delete(post);
         }
 
         @Test
@@ -306,6 +351,8 @@ class StudyPostServiceTest {
             assertErrorCode(() -> studyPostService.delete(POST_ID, OTHER_USER_ID), ErrorCode.NOT_POST_AUTHOR);
 
             verify(studyPostRepository, never()).delete(any(StudyPost.class));
+            // 권한이 없으면 댓글도 지우지 않는다
+            verifyNoInteractions(commentRepository);
         }
 
         @Test
