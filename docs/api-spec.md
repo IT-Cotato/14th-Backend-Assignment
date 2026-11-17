@@ -294,7 +294,8 @@
 }
 ```
 
-- 에러: `404 STUDY_POST_NOT_FOUND`
+- 규칙: `page`는 기본 0이고 음수이면 `400 INVALID_INPUT`, `size`는 기본 20이고 1~100 범위를 벗어나면 `400 INVALID_INPUT`이다. 로그인하지 않았으면 모든 댓글의 `isAuthor`는 `false`다.
+- 에러: `400 INVALID_INPUT`, `404 STUDY_POST_NOT_FOUND`
 
 ### 12. 댓글 수정 `PATCH /api/comments/{commentId}`
 

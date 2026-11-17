@@ -32,6 +32,7 @@ Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제
 │   │   │   │   ├── domain/             # 도메인별 controller, dto, entity, repository, service
 │   │   │   │   │   ├── auth/           # 회원가입·로그인·로그아웃, 로그아웃한 토큰
 │   │   │   │   │   ├── book/
+│   │   │   │   │   ├── comment/        # 댓글(스터디 신청)
 │   │   │   │   │   ├── study/          # 스터디 모집글
 │   │   │   │   │   └── user/           # 사용자, 내 정보
 │   │   │   │   └── global/
@@ -50,7 +51,7 @@ Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제
 │   ├── src/
 │   │   ├── api/                    # axios 클라이언트, API 호출 함수, 응답 타입
 │   │   ├── auth/                   # 로그인 상태, 보호 라우트, 토큰 저장
-│   │   ├── components/             # 헤더, 레이아웃, 폼 입력 등 공통 컴포넌트
+│   │   ├── components/             # 헤더, 레이아웃, 폼 입력, 댓글 영역 등 공통 컴포넌트
 │   │   ├── pages/                  # 화면 (로그인, 회원가입, 마이페이지, 스터디 목록·상세·작성/수정)
 │   │   └── utils/                  # 메시지 처리 등 보조 함수
 │   ├── package.json                # 의존성·스크립트 (dev, build, lint)
@@ -97,12 +98,25 @@ Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제
 | 클래스 | 역할 |
 |---|---|
 | StudyPostController | 모집글 작성·목록·상세·수정·삭제 요청 처리 (`/api/study-posts`) |
-| StudyPostService | 작성자 확인, 부분 수정, 키워드 이스케이프와 페이징 값 검증 |
+| StudyPostService | 작성자 확인, 부분 수정, 키워드 이스케이프와 페이징 값 검증, 목록의 댓글 수 집계, 삭제 시 댓글 벌크 삭제 |
 | StudyPost, StudyStatus | 모집글 데이터와 모집 상태(`RECRUITING`, `CLOSED`). 작성자는 LAZY 연관 |
 | StudyPostRepository | `search`의 JPQL로 `keyword`·`status`·`part` 조건을 한 번에 처리하고(값이 없는 조건은 무시), 작성자를 fetch join으로 함께 조회 |
 | AuthorResponse | 모집글·댓글에 담는 작성자 정보(닉네임, 기수, 파트) |
 
-모집글의 댓글 수는 댓글 기능을 구현하기 전까지 항상 0으로 내려준다.
+### 댓글(스터디 신청) 도메인
+
+댓글을 남기는 것이 곧 스터디 신청이다.
+
+| 클래스 | 역할 |
+|---|---|
+| CommentController | 댓글 작성·목록(`/api/study-posts/{postId}/comments`), 수정·삭제(`/api/comments/{commentId}`) 요청 처리 |
+| CommentService | 마감된 글의 작성 제한(`STUDY_POST_CLOSED`), 작성자 확인, 페이징 값 검증 |
+| StudyPostComment | 댓글 데이터. 모집글과 작성자를 LAZY로 연관 (`study_post_comment`) |
+| StudyPostCommentRepository | 댓글 목록(작성자 fetch join), 글 여러 개의 댓글 수를 한 번에 집계, 글 삭제 시 댓글 벌크 삭제 |
+| CommentResponse | 댓글 하나의 응답. 본인 댓글 여부를 `isAuthor`로 내려줌 |
+
+- 모집글 목록의 `commentCount`는 현재 페이지 글들의 댓글 수를 `group by` 쿼리 한 번으로 세어 붙인다. 글마다 따로 세지 않아 N+1이 생기지 않는다.
+- 모집글을 삭제할 때는 댓글을 벌크 삭제 쿼리로 먼저 지운 뒤 글을 삭제한다. 댓글이 글을 참조(FK)하므로 이 순서를 바꾸면 삭제가 실패한다.
 
 ### 공통 영역
 
