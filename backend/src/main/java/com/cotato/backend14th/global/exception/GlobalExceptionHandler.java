@@ -6,6 +6,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.cotato.backend14th.global.common.response.ErrorResponse;
 
@@ -30,8 +31,13 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(e.getErrorCode(), request));
     }
 
-    // @Valid 검증 실패, 읽을 수 없는 요청 본문(잘못된 JSON, 허용되지 않는 enum 값 등)은 400으로 처리해요
-    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+    // @Valid 검증 실패, 읽을 수 없는 요청 본문(잘못된 JSON, 허용되지 않는 enum 값 등),
+    // 형식이 맞지 않는 쿼리 파라미터·경로 변수(예: status=ABC, /study-posts/abc)는 400으로 처리해요
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class,
+            HttpMessageNotReadableException.class,
+            MethodArgumentTypeMismatchException.class
+    })
     public ResponseEntity<ErrorResponse> handleInvalidInput(
             Exception e, HttpServletRequest request
     ) {
