@@ -7,6 +7,12 @@ export interface ApiResponse<T> {
 
 export type Part = "PM" | "DE" | "BE" | "FE";
 
+export interface Author {
+  nickname: string;
+  generation: number;
+  part: Part;
+}
+
 export interface PageResponse<T> {
   content: T[];
   page: number;

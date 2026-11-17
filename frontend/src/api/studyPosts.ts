@@ -1,13 +1,9 @@
 import { apiClient } from "./client";
-import type { ApiResponse, PageResponse, Part } from "./types";
+import type { ApiResponse, Author, PageResponse, Part } from "./types";
+
+export type { Author };
 
 export type StudyStatus = "RECRUITING" | "CLOSED";
-
-export interface Author {
-  nickname: string;
-  generation: number;
-  part: Part;
-}
 
 export interface StudyPostListItem {
   postId: number;

@@ -52,7 +52,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/study-posts").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/api/study-posts/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/study-posts/**").authenticated()
-                        .anyRequest().permitAll() // 그 외(book, swagger, 모집글 목록/상세 등) 기존 공개 범위는 그대로 둬요
+                        .requestMatchers(HttpMethod.POST, "/api/study-posts/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/comments/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()
+                        .anyRequest().permitAll() // 그 외(book, swagger, 모집글/댓글 목록·상세 등) 기존 공개 범위는 그대로 둬요
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

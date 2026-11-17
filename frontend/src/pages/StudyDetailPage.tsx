@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { extractErrorMessage } from "../api/client";
 import { deleteStudyPost, getStudyPost } from "../api/studyPosts";
 import type { StudyPostDetail } from "../api/studyPosts";
+import { CommentSection } from "../components/CommentSection";
 
 export function StudyDetailPage() {
   const { postId } = useParams();
@@ -104,6 +105,8 @@ export function StudyDetailPage() {
           <dd>{detail.updatedAt}</dd>
         </div>
       </dl>
+
+      <CommentSection postId={detail.postId} isPostClosed={detail.studyStatus === "CLOSED"} />
 
       <Link to="/studies">목록으로</Link>
     </section>

@@ -27,6 +27,7 @@ import com.cotato.backend14th.domain.studypost.dto.response.StudyPostDetailRespo
 import com.cotato.backend14th.domain.studypost.dto.response.StudyPostIdResponse;
 import com.cotato.backend14th.domain.studypost.entity.StudyPost;
 import com.cotato.backend14th.domain.studypost.entity.StudyStatus;
+import com.cotato.backend14th.domain.comment.repository.StudyPostCommentRepository;
 import com.cotato.backend14th.domain.studypost.repository.StudyPostRepository;
 import com.cotato.backend14th.domain.user.entity.Part;
 import com.cotato.backend14th.domain.user.entity.User;
@@ -43,6 +44,9 @@ class StudyPostServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private StudyPostCommentRepository studyPostCommentRepository;
 
     @Mock
     private StudyPostCreateRequest createRequest;
@@ -221,6 +225,7 @@ class StudyPostServiceTest {
 
         studyPostService.delete(10L, 1L);
 
+        verify(studyPostCommentRepository).deleteByStudyPostId(10L);
         verify(studyPostRepository).delete(post);
     }
 

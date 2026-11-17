@@ -1,10 +1,16 @@
 package com.cotato.backend14th.domain.studypost.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cotato.backend14th.domain.comment.repository.StudyPostCommentCountProjection;
+import com.cotato.backend14th.domain.comment.repository.StudyPostCommentRepository;
 import com.cotato.backend14th.domain.studypost.dto.request.StudyPostCreateRequest;
 import com.cotato.backend14th.domain.studypost.dto.request.StudyPostUpdateRequest;
 import com.cotato.backend14th.domain.studypost.dto.response.StudyPostDetailResponse;
@@ -29,6 +35,7 @@ public class StudyPostService {
 
     private final StudyPostRepository studyPostRepository;
     private final UserRepository userRepository;
+    private final StudyPostCommentRepository studyPostCommentRepository;
 
     @Transactional
     public StudyPostIdResponse create(Long userId, StudyPostCreateRequest request) {
@@ -57,7 +64,14 @@ public class StudyPostService {
                 keywordOrNull, statusEnum, partEnum, PageRequest.of(page, size)
         );
 
-        Page<StudyPostListItemResponse> mapped = result.map(this::toListItem);
+        List<Long> postIds = result.getContent().stream().map(StudyPost::getId).toList();
+        Map<Long, Long> commentCountMap = studyPostCommentRepository.countByStudyPostIdIn(postIds).stream()
+                .collect(Collectors.toMap(
+                        StudyPostCommentCountProjection::getStudyPostId,
+                        StudyPostCommentCountProjection::getCommentCount
+                ));
+
+        Page<StudyPostListItemResponse> mapped = result.map(sp -> toListItem(sp, commentCountMap));
         return PageResponse.of(mapped);
     }
 
@@ -106,7 +120,7 @@ public class StudyPostService {
 
         requireAuthor(studyPost, userId);
 
-        // TODO: 3단계에서 StudyPostComment 추가 시 이 글에 달린 댓글도 함께 삭제해야 함
+        studyPostCommentRepository.deleteByStudyPostId(postId);
         studyPostRepository.delete(studyPost);
     }
 
@@ -138,13 +152,14 @@ public class StudyPostService {
         }
     }
 
-    private StudyPostListItemResponse toListItem(StudyPost studyPost) {
+    private StudyPostListItemResponse toListItem(StudyPost studyPost, Map<Long, Long> commentCountMap) {
+        long commentCount = commentCountMap.getOrDefault(studyPost.getId(), 0L);
         return new StudyPostListItemResponse(
                 studyPost.getId(),
                 studyPost.getTitle(),
                 studyPost.getStudyStatus().name(),
                 AuthorResponse.from(studyPost.getUser()),
-                0,
+                (int) commentCount,
                 studyPost.getCreatedAt()
         );
     }
