@@ -2,6 +2,7 @@
 package com.cotato.backend14th.global.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,6 +27,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(e.getErrorCode().getHttpStatus())
                 .body(ErrorResponse.of(e.getErrorCode(), request));
+    }
+
+    // @Valid 검증 실패를 400 INVALID_INPUT으로 처리해요
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(
+            MethodArgumentNotValidException e, HttpServletRequest request
+    ) {
+        log.warn("[MethodArgumentNotValidException] {} {} | {}",
+                request.getMethod(), request.getRequestURI(), e.getMessage());
+
+        return ResponseEntity
+                .status(ErrorCode.INVALID_INPUT.getHttpStatus())
+                .body(ErrorResponse.of(ErrorCode.INVALID_INPUT, request));
     }
 
     // 그 외 예상치 못한 모든 예외는 500으로 처리해요

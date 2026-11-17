@@ -17,4 +17,8 @@ public class ResponseUtils {
                 .status(201)
                 .body(ApiResponse.created(data));
     }
+
+    public ResponseEntity<Void> noContent() {
+        return ResponseEntity.noContent().build();
+    }
 }
