@@ -13,10 +13,11 @@ export function Header() {
 
   return (
     <header className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-      <Link to="/mypage" className="font-semibold">
+      <Link to="/studies" className="font-semibold">
         코테이토 스터디 매칭
       </Link>
       <nav className="flex items-center gap-4">
+        <Link to="/studies">스터디 목록</Link>
         {user ? (
           <>
             <span>{user.nickname}님</span>

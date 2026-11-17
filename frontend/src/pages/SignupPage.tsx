@@ -4,14 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { extractErrorMessage } from "../api/client";
 import { signup } from "../api/auth";
-import type { Part } from "../api/auth";
-
-const PART_OPTIONS: { value: Part; label: string }[] = [
-  { value: "PM", label: "PM (기획)" },
-  { value: "DE", label: "DE (디자인)" },
-  { value: "BE", label: "BE (백엔드)" },
-  { value: "FE", label: "FE (프론트엔드)" },
-];
+import type { Part } from "../api/types";
+import { PART_OPTIONS } from "../constants/part";
 
 export function SignupPage() {
   const navigate = useNavigate();

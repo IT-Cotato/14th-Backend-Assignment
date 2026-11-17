@@ -3,6 +3,7 @@ package com.cotato.backend14th.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -48,7 +49,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll()
                         .requestMatchers("/api/users/me", "/api/auth/logout").authenticated()
-                        .anyRequest().permitAll() // 그 외(book, swagger 등) 기존 공개 범위는 그대로 둬요
+                        .requestMatchers(HttpMethod.POST, "/api/study-posts").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/study-posts/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/study-posts/**").authenticated()
+                        .anyRequest().permitAll() // 그 외(book, swagger, 모집글 목록/상세 등) 기존 공개 범위는 그대로 둬요
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

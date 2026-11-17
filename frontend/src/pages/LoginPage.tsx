@@ -23,7 +23,7 @@ export function LoginPage() {
     try {
       const { accessToken } = await loginApi({ email, password });
       await login(accessToken);
-      navigate("/mypage");
+      navigate("/studies");
     } catch (error) {
       setErrorMessage(extractErrorMessage(error));
     } finally {

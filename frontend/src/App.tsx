@@ -5,6 +5,9 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { LoginPage } from "./pages/LoginPage";
 import { MyPage } from "./pages/MyPage";
 import { SignupPage } from "./pages/SignupPage";
+import { StudyDetailPage } from "./pages/StudyDetailPage";
+import { StudyListPage } from "./pages/StudyListPage";
+import { StudyPostFormPage } from "./pages/StudyPostFormPage";
 
 function App() {
   return (
@@ -21,7 +24,25 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/mypage" replace />} />
+        <Route path="/studies" element={<StudyListPage />} />
+        <Route
+          path="/studies/new"
+          element={
+            <ProtectedRoute>
+              <StudyPostFormPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/studies/:postId" element={<StudyDetailPage />} />
+        <Route
+          path="/studies/:postId/edit"
+          element={
+            <ProtectedRoute>
+              <StudyPostFormPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/studies" replace />} />
       </Routes>
     </>
   );

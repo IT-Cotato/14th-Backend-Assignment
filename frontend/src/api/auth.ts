@@ -1,13 +1,7 @@
 import { apiClient } from "./client";
+import type { ApiResponse, Part } from "./types";
 
-export interface ApiResponse<T> {
-  success: boolean;
-  status: number;
-  data: T;
-  timestamp: string;
-}
-
-export type Part = "PM" | "DE" | "BE" | "FE";
+export type { ApiResponse, Part } from "./types";
 
 export interface SignupRequest {
   email: string;
