@@ -10,6 +10,7 @@ export default function StudyFormPage() {
     const [content, setContent] = useState('')
     const [studyStatus, setStudyStatus] = useState('RECRUITING')
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(isEdit)
 
     useEffect(() => {
         if (!localStorage.getItem('accessToken')) {
@@ -23,6 +24,7 @@ export default function StudyFormPage() {
             setContent(data.content)
             setStudyStatus(data.studyStatus)
         }).catch(() => setError('글을 불러오지 못했어요.'))
+            .finally(() => setLoading(false))
     }, [id, isEdit, navigate])
 
     async function onSubmit(e: React.FormEvent) {
@@ -46,23 +48,45 @@ export default function StudyFormPage() {
             <h1 className="text-xl font-bold">{isEdit ? '모집글 수정' : '모집글 작성'}</h1>
             <div>
                 <label htmlFor="title">제목</label>
-                <input id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="mt-1 w-full border p-2" required maxLength={50} />
+                <input
+                    id="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="mt-1 w-full border p-2"
+                    required
+                    maxLength={50}
+                    disabled={loading}
+                />
             </div>
             <div>
                 <label htmlFor="content">내용</label>
-                <textarea id="content" value={content} onChange={(e) => setContent(e.target.value)} className="mt-1 w-full border p-2" required maxLength={2000} />
+                <textarea
+                    id="content"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    className="mt-1 w-full border p-2"
+                    required
+                    maxLength={2000}
+                    disabled={loading}
+                />
             </div>
             {isEdit && (
                 <div>
                     <label htmlFor="studyStatus">모집 상태</label>
-                    <select id="studyStatus" value={studyStatus} onChange={(e) => setStudyStatus(e.target.value)} className="mt-1 w-full border p-2">
+                    <select
+                        id="studyStatus"
+                        value={studyStatus}
+                        onChange={(e) => setStudyStatus(e.target.value)}
+                        className="mt-1 w-full border p-2"
+                        disabled={loading}
+                    >
                         <option value="RECRUITING">RECRUITING</option>
                         <option value="CLOSED">CLOSED</option>
                     </select>
                 </div>
             )}
             {error && <p role="alert">{error}</p>}
-            <button type="submit">{isEdit ? '수정' : '작성'}</button>
+            <button type="submit" disabled={loading}>{isEdit ? '수정' : '작성'}</button>
         </form>
     )
 }

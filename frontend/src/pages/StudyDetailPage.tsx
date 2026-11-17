@@ -66,12 +66,14 @@ export default function StudyDetailPage() {
         await load()
     }
 
-    if (!post) return <p className="p-6">로딩 중</p>
+    if (!post) return <p className="p-6">{error || '로딩 중'}</p>
 
     return (
         <section className="space-y-4 p-6">
             <h1 className="text-xl font-bold">{post.title}</h1>
-            <p>{post.author.nickname} · {post.author.generation}기 · {post.author.part} · {post.studyStatus}</p>
+            <p>
+                {post.author.nickname} · {post.author.generation}기 · {post.author.part} · {post.studyStatus}
+            </p>
             <p className="whitespace-pre-wrap">{post.content}</p>
             {post.isAuthor && (
                 <div className="flex gap-2">
@@ -92,8 +94,14 @@ export default function StudyDetailPage() {
             <ul className="space-y-2">
                 {comments.map((c) => (
                     <li key={c.commentId} className="border p-2">
-                        <p>{c.author.nickname}: {c.content}</p>
-                        {c.isAuthor && <button type="button" onClick={() => removeComment(c.commentId)}>댓글 삭제</button>}
+                        <p>
+                            {c.author.nickname}: {c.content}
+                        </p>
+                        {c.isAuthor && (
+                            <button type="button" onClick={() => removeComment(c.commentId)}>
+                                댓글 삭제
+                            </button>
+                        )}
                     </li>
                 ))}
             </ul>
