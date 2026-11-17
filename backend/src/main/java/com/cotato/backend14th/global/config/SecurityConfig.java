@@ -3,12 +3,21 @@ package com.cotato.backend14th.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import com.cotato.backend14th.domain.auth.repository.RevokedTokenRepository;
+import com.cotato.backend14th.global.security.JwtAuthenticationEntryPoint;
+import com.cotato.backend14th.global.security.JwtAuthenticationFilter;
+import com.cotato.backend14th.global.security.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +27,15 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final CorsConfigurationSource corsConfigurationSource;
+    private final JwtProvider jwtProvider;
+    private final RevokedTokenRepository revokedTokenRepository;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+
+    // 비밀번호는 BCrypt로 암호화해서 저장해요
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -27,8 +45,19 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않아요
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint)) // 인증 실패는 401로 내려줘요
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // 이번 주는 전부 열어둬요
+                        // 공개 API: 회원가입, 로그인, 모집글과 댓글 조회
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/study-posts/**").permitAll()
+                        // 그 외 /api 는 로그인이 필요해요
+                        .requestMatchers("/api/**").authenticated()
+                        // /api 가 아닌 기존 경로(/hello, /books, Swagger 등)는 그대로 열어둬요
+                        .anyRequest().permitAll()
+                )
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(jwtProvider, revokedTokenRepository),
+                        UsernamePasswordAuthenticationFilter.class
                 );
         return http.build();
     }

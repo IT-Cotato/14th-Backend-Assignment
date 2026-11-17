@@ -5,3 +5,7 @@ spring:
     name: backend14th
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-seconds: ${JWT_EXPIRATION_SECONDS:3600}

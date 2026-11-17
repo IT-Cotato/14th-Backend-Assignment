@@ -2,6 +2,8 @@
 package com.cotato.backend14th.global.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,6 +28,19 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(e.getErrorCode().getHttpStatus())
                 .body(ErrorResponse.of(e.getErrorCode(), request));
+    }
+
+    // @Valid 검증 실패, 읽을 수 없는 요청 본문(잘못된 JSON, 허용되지 않는 enum 값 등)은 400으로 처리해요
+    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+    public ResponseEntity<ErrorResponse> handleInvalidInput(
+            Exception e, HttpServletRequest request
+    ) {
+        log.warn("[InvalidInput] {} {} | {}",
+                request.getMethod(), request.getRequestURI(), e.getClass().getSimpleName());
+
+        return ResponseEntity
+                .status(ErrorCode.INVALID_INPUT.getHttpStatus())
+                .body(ErrorResponse.of(ErrorCode.INVALID_INPUT, request));
     }
 
     // 그 외 예상치 못한 모든 예외는 500으로 처리해요

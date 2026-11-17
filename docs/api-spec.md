@@ -113,8 +113,8 @@
 { "userId": 1 }
 ```
 
-- 검증: `email` 형식 / `password` 8자 이상 / `nickname` 2~10자 / `generation` 1 이상의 정수 / `part`는 `PM`, `DE`, `BE`, `FE` 중 하나
-- 규칙: 비밀번호는 BCrypt로 암호화해 저장한다. 기수와 파트는 본인이 입력하는 값이며 별도로 검증하지 않는다.
+- 검증: `email` 형식 / `password` 8자 이상 72자 이하 / `nickname` 2~10자 / `generation` 1 이상의 정수 / `part`는 `PM`, `DE`, `BE`, `FE` 중 하나
+- 규칙: 비밀번호는 BCrypt로 암호화해 저장한다. BCrypt가 72바이트까지만 처리하므로 상한을 둔다. 기수와 파트는 본인이 입력하는 값이며 별도로 검증하지 않는다.
 - 에러: `400 INVALID_INPUT`, `409 EMAIL_ALREADY_EXISTS`
 
 ### 2. 로그인 `POST /api/auth/login`
