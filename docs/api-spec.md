@@ -185,8 +185,8 @@
 | `keyword` | 선택 | 제목, 내용에 포함된 키워드 |
 | `status` | 선택 | `RECRUITING` 또는 `CLOSED`. 없으면 전체 |
 | `part` | 선택 | `PM`, `DE`, `BE`, `FE` 중 하나. 작성자의 파트가 같은 글만. 없으면 전체 |
-| `page` | 선택 | 기본 0 |
-| `size` | 선택 | 기본 10 |
+| `page` | 선택 | 기본 0. 음수이면 `400 INVALID_INPUT` |
+| `size` | 선택 | 기본 10. 1~100 범위를 벗어나면 `400 INVALID_INPUT` |
 
 ```json
 // Response 200 (최신순 정렬)

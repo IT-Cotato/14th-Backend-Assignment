@@ -32,6 +32,7 @@ Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제
 │   │   │   │   ├── domain/             # 도메인별 controller, dto, entity, repository, service
 │   │   │   │   │   ├── auth/           # 회원가입·로그인·로그아웃, 로그아웃한 토큰
 │   │   │   │   │   ├── book/
+│   │   │   │   │   ├── study/          # 스터디 모집글
 │   │   │   │   │   └── user/           # 사용자, 내 정보
 │   │   │   │   └── global/
 │   │   │   │       ├── common/entity/
@@ -50,7 +51,7 @@ Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제
 │   │   ├── api/                    # axios 클라이언트, API 호출 함수, 응답 타입
 │   │   ├── auth/                   # 로그인 상태, 보호 라우트, 토큰 저장
 │   │   ├── components/             # 헤더, 레이아웃, 폼 입력 등 공통 컴포넌트
-│   │   ├── pages/                  # 화면 (로그인, 회원가입, 마이페이지, 스터디 목록)
+│   │   ├── pages/                  # 화면 (로그인, 회원가입, 마이페이지, 스터디 목록·상세·작성/수정)
 │   │   └── utils/                  # 메시지 처리 등 보조 함수
 │   ├── package.json                # 의존성·스크립트 (dev, build, lint)
 │   ├── vite.config.ts              # 3000번 포트 고정, Tailwind 플러그인
@@ -91,6 +92,18 @@ Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제
 | User, Part, UserRepository | 사용자 데이터와 파트(`PM`, `DE`, `BE`, `FE`) |
 | UserController, UserService | 내 정보 조회 (`/api/users/me`) |
 
+### 스터디 모집글 도메인
+
+| 클래스 | 역할 |
+|---|---|
+| StudyPostController | 모집글 작성·목록·상세·수정·삭제 요청 처리 (`/api/study-posts`) |
+| StudyPostService | 작성자 확인, 부분 수정, 키워드 이스케이프와 페이징 값 검증 |
+| StudyPost, StudyStatus | 모집글 데이터와 모집 상태(`RECRUITING`, `CLOSED`). 작성자는 LAZY 연관 |
+| StudyPostRepository | `search`의 JPQL로 `keyword`·`status`·`part` 조건을 한 번에 처리하고(값이 없는 조건은 무시), 작성자를 fetch join으로 함께 조회 |
+| AuthorResponse | 모집글·댓글에 담는 작성자 정보(닉네임, 기수, 파트) |
+
+모집글의 댓글 수는 댓글 기능을 구현하기 전까지 항상 0으로 내려준다.
+
 ### 공통 영역
 
 | 주요 클래스 | 역할 |
@@ -98,6 +111,7 @@ Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제
 | BaseEntity | 생성·수정 시각 관리 |
 | ApiResponse, ResponseUtils | 공통 성공 응답 구성 |
 | ErrorResponse | 오류 응답 데이터 표현 |
+| PageResponse | 목록 응답 형식 (`content`, `page`, `size`, `totalElements`, `totalPages`) |
 | SwaggerConfig | OpenAPI 문서의 기본 정보와 Bearer 인증 설정 |
 | CorsConfig | CORS 정책 정의 |
 | SecurityConfig | 경로별 접근 규칙(공개·로그인), JWT 필터 연결, BCrypt 인코더, 세션 정책 설정 |
@@ -105,7 +119,7 @@ Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제
 | JwtAuthenticationFilter | 요청마다 토큰을 확인하고 로그아웃한 토큰이면 인증하지 않음 |
 | JwtAuthenticationEntryPoint | 인증이 필요한 경로의 실패를 401 `ErrorResponse`로 응답 |
 | ErrorCode, Backend14thException | 오류 코드와 사용자 정의 예외 정의 |
-| GlobalExceptionHandler | 예외를 HTTP 오류 응답으로 변환 (검증 실패는 400) |
+| GlobalExceptionHandler | 예외를 HTTP 오류 응답으로 변환 (검증 실패와 형식이 맞지 않는 요청 값은 400) |
 
 ## Book API 처리 흐름
 
