@@ -39,5 +39,10 @@ out/
 ### environment ###
 .env
 
+### frontend / e2e ###
+node_modules/
+playwright-report/
+test-results/
+
 # Claude Code personal settings
 .claude/settings.local.json
