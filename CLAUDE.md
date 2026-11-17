@@ -3,7 +3,7 @@
 ## 프로젝트 개요
 
 코테이토 스터디 매칭 플랫폼을 만드는 모노레포 프로젝트다. (5,6주차 과제, 이슈 #127)
-백엔드는 `backend/`에서 관리한다.
+백엔드는 `backend/`, 프론트엔드는 `frontend/`에서 관리한다.
 
 ### 도메인
 
@@ -19,6 +19,13 @@ Gradle, Spring Data JPA, MySQL, Spring Security, SpringDoc, Lombok을 사용한�
 기본 패키지는 `com.cotato.backend14th`다.
 현재 구현 상태는 문서가 아니라 실제 코드(`backend/src/main/java`)를 기준으로 확인한다.
 설명과 문서는 한국어로 작성하고, 코드 식별자와 명령어는 원문을 유지한다.
+
+### 프론트엔드 스택
+
+React, TypeScript, Vite, Tailwind CSS, React Router, axios를 사용한다. Next.js는 사용하지 않는다.
+버전은 `frontend/package.json`을 기준으로 확인한다.
+개발 서버는 3000번 포트로 고정하며, 백엔드 CORS 설정이 이 포트를 허용한다.
+입력창에는 `label`을 연결하고, 동작은 `button`, 이동은 링크(`a`)로 만든다. E2E 테스트가 역할과 라벨로 요소를 찾는다.
 
 ## 어디서 무엇을 읽을지
 
@@ -49,6 +56,17 @@ cd backend
 - Spring 컨텍스트를 불러오는 테스트와 로컬 실행에는 DB 연결 및 환경설정이 필요할 수 있다.
 - macOS·Linux에서는 `.\gradlew.bat` 대신 `./gradlew`를 사용한다.
 
+프론트엔드 명령어는 `frontend/` 디렉터리에서 실행한다.
+
+```powershell
+cd frontend
+npm run dev     # 개발 서버 (3000번 포트)
+npm run build   # 타입 검사와 빌드
+npm run lint    # 린트
+```
+
+- API를 호출하는 화면을 확인하려면 백엔드(`bootRun`)를 먼저 실행한다.
+
 ## 로컬 실행 환경
 
 - 기본 프로필은 `local`이며 `SPRING_PROFILES_ACTIVE`로 변경할 수 있다.
@@ -56,6 +74,8 @@ cd backend
 - `backend/.env.example`에는 필요한 환경변수 이름만 적고 값은 비워 둔다.
 - 로컬 프로필은 `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`를 참조한다.
 - `DB_URL`은 기본값이 없고, 사용자명·비밀번호의 기본값은 각각 `root`와 빈 문자열이다.
+- 인증에는 `JWT_SECRET`(32자 이상)이 필요하다. `backend/.env`에 두며, 없으면 서버가 시작되지 않는다.
+- 프론트는 백엔드 주소를 `VITE_API_BASE_URL`로 바꿀 수 있고, 기본값은 `http://localhost:8080`이다. (`frontend/.env.example`)
 - 실제 접속 환경에 맞는 값은 사용자가 로컬에서 관리한다.
 - 로컬의 `ddl-auto: update` 설정을 운영 환경에 그대로 적용하지 않는다.
 

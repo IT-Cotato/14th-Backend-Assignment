@@ -116,6 +116,15 @@ cd backend
 ./gradlew bootRun
 ```
 
+프론트엔드 명령어는 `frontend/` 디렉터리에서 실행한다.
+
+```bash
+cd frontend
+npm run dev     # 개발 서버 (3000번 포트)
+npm run build   # 타입 검사와 빌드
+npm run lint    # 린트
+```
+
 `build`는 기본 테스트를 포함한다.
 같은 변경에 대해 `build`가 성공했다면 특별한 이유 없이 `test`를 다시 실행하지 않아도 된다.
 
