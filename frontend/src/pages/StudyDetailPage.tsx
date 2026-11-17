@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { deleteStudy, fetchStudy, updateStudy } from '../api/studies'
 import type { StudyPostDetail } from '../api/types'
 import { useAuth } from '../auth/useAuth'
+import { CommentSection } from '../components/CommentSection'
 import { StatusBadge } from '../components/StatusBadge'
 import { cardClass } from '../components/styles'
 import { formatAuthor, formatDateTime } from '../utils/format'
@@ -178,6 +179,9 @@ export function StudyDetailPage() {
           )}
         </section>
       )}
+
+      {/* key: 다른 모집글로 이동하면 댓글 영역의 페이지·입력 상태를 새로 시작한다 */}
+      <CommentSection key={post.postId} postId={post.postId} closed={post.studyStatus === 'CLOSED'} />
     </div>
   )
 }

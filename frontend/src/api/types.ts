@@ -126,3 +126,21 @@ export interface StudyPostUpdateRequest {
 export interface StudyPostIdResponse {
   postId: number
 }
+
+// 댓글이 곧 스터디 신청이다
+export interface CommentItem {
+  commentId: number
+  content: string
+  author: Author
+  isAuthor: boolean
+  createdAt: string
+}
+
+// 댓글 작성·수정 요청
+export interface CommentRequest {
+  content: string
+}
+
+export interface CommentIdResponse {
+  commentId: number
+}
