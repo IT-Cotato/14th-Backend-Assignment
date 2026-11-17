@@ -21,14 +21,17 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final TokenBlacklist tokenBlacklist;
 
+    // 모든 요청이 이 필터를 먼저 지나가는 기능
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            if (jwtProvider.validateToken(token)) {
+            // 서명이 맞고 만료되지 않았으며, 로그아웃으로 차단된 토큰이 아닐 때만 인증한다
+            if (jwtProvider.validateToken(token) && !tokenBlacklist.isBlacklisted(token)) {
                 Long userId = jwtProvider.getUserId(token);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userId, null, List.of());

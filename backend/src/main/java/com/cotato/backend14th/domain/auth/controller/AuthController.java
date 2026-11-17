@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,5 +38,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest request){
         return ResponseUtils.ok(authService.login(request));
+    }
+
+    @Operation(summary = "로그아웃", description = "사용한 토큰을 무효 처리해요. 이후 같은 토큰으로는 요청할 수 없어요.")
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authorization){
+        // "Bearer " 뒤의 토큰만 잘라서 넘긴다
+        authService.logout(authorization.substring(7));
+        return ResponseEntity.noContent().build();
     }
 }

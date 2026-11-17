@@ -48,6 +48,11 @@ public class JwtProvider {
         return Long.valueOf(parse(token).getSubject());
     }
 
+    // 토큰의 만료 시각을 꺼낸다 (로그아웃한 토큰을 언제까지 막을지 정할 때 쓴다)
+    public Date getExpiration(String token){
+        return parse(token).getExpiration();
+    }
+
     private Claims parse(String token){
         return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
     }

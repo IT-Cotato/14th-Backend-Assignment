@@ -9,6 +9,7 @@ import com.cotato.backend14th.domain.user.repository.UserRepository;
 import com.cotato.backend14th.global.exception.Backend14thException;
 import com.cotato.backend14th.global.exception.ErrorCode;
 import com.cotato.backend14th.global.jwt.JwtProvider;
+import com.cotato.backend14th.global.jwt.TokenBlacklist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final TokenBlacklist tokenBlacklist;
 
     // DB 작업 트랜잭션으로 수행
     @Transactional
@@ -60,4 +62,8 @@ public class AuthService {
 
     }
 
+    // 사용한 토큰을 만료 시각까지 차단 목록에 넣는다
+    public void logout(String token){
+        tokenBlacklist.add(token, jwtProvider.getExpiration(token));
+    }
 }
