@@ -23,6 +23,11 @@ public enum ErrorCode {
     // STUDY
     STUDY_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY-001", "존재하지 않는 스터디 모집글입니다."),
     NOT_POST_AUTHOR(HttpStatus.FORBIDDEN, "STUDY-002", "모집글 작성자만 수정하거나 삭제할 수 있습니다."),
+    STUDY_POST_CLOSED(HttpStatus.CONFLICT, "STUDY-003", "모집이 마감된 글에는 댓글을 작성할 수 없습니다."),
+
+    // COMMENT
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-001", "존재하지 않는 댓글입니다."),
+    NOT_COMMENT_AUTHOR(HttpStatus.FORBIDDEN, "COMMENT-002", "댓글 작성자만 수정하거나 삭제할 수 있습니다."),
 
     // BOOK
     BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOK-001", "책을 찾을 수 없습니다.");

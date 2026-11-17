@@ -1,10 +1,16 @@
 package com.cotato.backend14th.domain.study.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cotato.backend14th.domain.comment.repository.StudyPostCommentRepository;
+import com.cotato.backend14th.domain.comment.repository.StudyPostCommentRepository.PostCommentCount;
 import com.cotato.backend14th.domain.study.dto.StudyPostCreateRequest;
 import com.cotato.backend14th.domain.study.dto.StudyPostDetailResponse;
 import com.cotato.backend14th.domain.study.dto.StudyPostIdResponse;
@@ -32,6 +38,7 @@ public class StudyPostService {
     private static final char LIKE_ESCAPE = '!';
 
     private final StudyPostRepository studyPostRepository;
+    private final StudyPostCommentRepository commentRepository;
     private final UserRepository userRepository;
 
     @Transactional
@@ -54,8 +61,9 @@ public class StudyPostService {
         Page<StudyPost> posts = studyPostRepository.search(
                 toLikeKeyword(keyword), status, part, PageRequest.of(page, size));
 
-        // 댓글(스터디 신청)은 아직 구현 전이라 댓글 수는 항상 0이에요. 댓글 기능을 만들 때 실제 개수로 바꿔요.
-        return PageResponse.from(posts.map(post -> StudyPostSummaryResponse.from(post, 0L)));
+        Map<Long, Long> commentCounts = countComments(posts.getContent());
+        return PageResponse.from(posts.map(post ->
+                StudyPostSummaryResponse.from(post, commentCounts.getOrDefault(post.getId(), 0L))));
     }
 
     // currentUserId는 로그인하지 않았으면 null이에요
@@ -81,7 +89,20 @@ public class StudyPostService {
     public void delete(Long postId, Long userId) {
         StudyPost post = findPost(postId);
         validateAuthor(post, userId);
+
+        // 댓글이 글을 참조(FK)하므로 댓글을 먼저 쿼리 한 번으로 지운 뒤 글을 삭제해요
+        commentRepository.deleteByStudyPostId(postId);
         studyPostRepository.delete(post);
+    }
+
+    // 현재 페이지 글들의 댓글 수를 쿼리 한 번으로 세요. 댓글이 없는 글은 맵에 없으므로 0으로 처리해요.
+    private Map<Long, Long> countComments(List<StudyPost> posts) {
+        if (posts.isEmpty()) {
+            return Map.of();
+        }
+        List<Long> postIds = posts.stream().map(StudyPost::getId).toList();
+        return commentRepository.countByPostIds(postIds).stream()
+                .collect(Collectors.toMap(PostCommentCount::getPostId, PostCommentCount::getCommentCount));
     }
 
     private StudyPost findPost(Long postId) {
