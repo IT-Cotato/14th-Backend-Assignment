@@ -5,6 +5,8 @@ import { LoginPage } from './pages/LoginPage'
 import { MyPage } from './pages/MyPage'
 import { SignupPage } from './pages/SignupPage'
 import { StudiesPage } from './pages/StudiesPage'
+import { StudyDetailPage } from './pages/StudyDetailPage'
+import { StudyFormPage } from './pages/StudyFormPage'
 
 function NotFoundPage() {
   return (
@@ -25,9 +27,12 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/studies" element={<StudiesPage />} />
+        <Route path="/studies/:id" element={<StudyDetailPage />} />
 
-        {/* 로그인이 필요한 화면 */}
+        {/* 로그인이 필요한 화면. /studies/new 는 /studies/:id 보다 먼저 매칭된다(고정 경로가 우선) */}
         <Route element={<ProtectedRoute />}>
+          <Route path="/studies/new" element={<StudyFormPage />} />
+          <Route path="/studies/:id/edit" element={<StudyFormPage />} />
           <Route path="/mypage" element={<MyPage />} />
         </Route>
 

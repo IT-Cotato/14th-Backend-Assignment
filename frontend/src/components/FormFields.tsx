@@ -1,4 +1,4 @@
-import { useId, type InputHTMLAttributes, type SelectHTMLAttributes } from 'react'
+import { useId, type InputHTMLAttributes, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react'
 import { inputClass } from './styles'
 
 interface FieldErrorProps {
@@ -36,6 +36,33 @@ export function TextField({ label, error, id, ...inputProps }: TextFieldProps) {
       <input
         {...inputProps}
         id={inputId}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errorId : undefined}
+        className={inputClass}
+      />
+      <FieldError id={errorId} message={error} />
+    </div>
+  )
+}
+
+type TextAreaFieldProps = {
+  label: string
+  error?: string | undefined
+} & TextareaHTMLAttributes<HTMLTextAreaElement>
+
+export function TextAreaField({ label, error, id, ...textareaProps }: TextAreaFieldProps) {
+  const autoId = useId()
+  const textareaId = id ?? autoId
+  const errorId = `${textareaId}-error`
+
+  return (
+    <div>
+      <label htmlFor={textareaId} className="mb-1 block text-sm font-medium text-slate-700">
+        {label}
+      </label>
+      <textarea
+        {...textareaProps}
+        id={textareaId}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
         className={inputClass}
