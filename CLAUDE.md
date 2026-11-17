@@ -2,7 +2,19 @@
 
 ## 프로젝트 개요
 
-Java 21과 Spring Boot 기반의 백엔드 프로젝트다.
+코테이토 스터디 매칭 플랫폼을 만드는 모노레포 프로젝트다. (5,6주차 과제, 이슈 #127)
+백엔드는 `backend/`에서 관리한다.
+
+### 도메인
+
+- 인증: 이메일·비밀번호 회원가입(기수, 파트 포함), 로그인(JWT), 로그아웃, 내 정보
+- 스터디 모집글: 작성, 목록(검색·모집 상태·파트 필터), 상세, 수정, 삭제
+- 댓글: 모집글에 댓글을 남기는 것이 곧 스터디 신청이다. 작성, 목록, 수정, 삭제
+- 요구사항 원문은 로컬 전용 `docs/assignments/week-05-06.md`에 있다. Git에는 올리지 않는다.
+
+### 백엔드 스택
+
+Java 21과 Spring Boot 기반이다.
 Gradle, Spring Data JPA, MySQL, Spring Security, SpringDoc, Lombok을 사용한다.
 기본 패키지는 `com.cotato.backend14th`다.
 현재 책 등록·단건 조회 API와 `/hello` API가 구현되어 있다.
@@ -24,9 +36,10 @@ Git Rule은 항상 적용하고, Controller Rule은 해당 파일의 `paths` 조
 
 ## 주요 명령어
 
-프로젝트 루트의 Windows PowerShell에서 Gradle Wrapper를 사용한다.
+백엔드 명령어는 `backend/` 디렉터리의 Windows PowerShell에서 Gradle Wrapper로 실행한다.
 
 ```powershell
+cd backend
 .\gradlew.bat build     # 빌드 및 테스트
 .\gradlew.bat test      # 테스트만 실행
 .\gradlew.bat bootRun   # 애플리케이션 실행
@@ -39,7 +52,8 @@ Git Rule은 항상 적용하고, Controller Rule은 해당 파일의 `paths` 조
 ## 로컬 실행 환경
 
 - 기본 프로필은 `local`이며 `SPRING_PROFILES_ACTIVE`로 변경할 수 있다.
-- `application.yml`에서 프로젝트 루트의 `.env`를 선택적으로 불러온다.
+- `application.yml`에서 실행 위치의 `.env`를 선택적으로 불러오므로, `backend/`에서 실행하고 `.env`는 `backend/` 안에 둔다.
+- `backend/.env.example`에는 필요한 환경변수 이름만 적고 값은 비워 둔다.
 - 로컬 프로필은 `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`를 참조한다.
 - `DB_URL`은 기본값이 없고, 사용자명·비밀번호의 기본값은 각각 `root`와 빈 문자열이다.
 - 실제 접속 환경에 맞는 값은 사용자가 로컬에서 관리한다.

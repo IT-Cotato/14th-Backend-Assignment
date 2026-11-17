@@ -96,9 +96,12 @@ Service 계층으로 분리한다.
 
 ### 기본 명령어
 
+백엔드 명령어는 `backend/` 디렉터리에서 실행한다.
+
 Windows PowerShell:
 
 ```powershell
+cd backend
 .\gradlew.bat build
 .\gradlew.bat test
 .\gradlew.bat bootRun
@@ -107,6 +110,7 @@ Windows PowerShell:
 macOS·Linux:
 
 ```bash
+cd backend
 ./gradlew build
 ./gradlew test
 ./gradlew bootRun

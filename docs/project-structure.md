@@ -2,6 +2,8 @@
 
 ## 프로젝트 개요
 
+코테이토 스터디 매칭 플랫폼의 모노레포다. 백엔드는 `backend/`에 둔다.
+
 Java 21과 Spring Boot 기반의 백엔드 프로젝트다.
 Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제공한다.
 
@@ -21,29 +23,33 @@ Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제
 │   └── settings.json               # Hook 연결 설정
 ├── .github/                        # 이슈·PR 템플릿
 ├── docs/                           # 구조·개발·협업 문서
-├── src/
-│   ├── main/
-│   │   ├── java/com/cotato/backend14th/
-│   │   │   ├── domain/book/
-│   │   │   │   ├── controller/
-│   │   │   │   ├── dto/
-│   │   │   │   ├── entity/
-│   │   │   │   └── repository/
-│   │   │   └── global/
-│   │   │       ├── common/entity/
-│   │   │       ├── common/response/
-│   │   │       ├── config/
-│   │   │       └── exception/
-│   │   └── resources/              # 애플리케이션·프로필 설정
-│   └── test/                       # 테스트 코드
-├── build.gradle                    # 의존성·Java 버전·빌드 설정
+├── backend/                        # Spring Boot 백엔드 (Gradle 프로젝트 루트)
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/com/cotato/backend14th/
+│   │   │   │   ├── domain/book/
+│   │   │   │   │   ├── controller/
+│   │   │   │   │   ├── dto/
+│   │   │   │   │   ├── entity/
+│   │   │   │   │   └── repository/
+│   │   │   │   └── global/
+│   │   │   │       ├── common/entity/
+│   │   │   │       ├── common/response/
+│   │   │   │       ├── config/
+│   │   │   │       └── exception/
+│   │   │   └── resources/          # 애플리케이션·프로필 설정
+│   │   └── test/                   # 테스트 코드
+│   ├── build.gradle                # 의존성·Java 버전·빌드 설정
+│   ├── settings.gradle
+│   ├── gradlew, gradlew.bat, gradle/  # Gradle Wrapper
+│   └── .env.example                # 필요한 환경변수 이름 (값은 비움)
 ├── .gitattributes                  # 줄바꿈 등 Git 속성
 └── .gitignore                      # Git 추적 제외 규칙
 ```
 
 주요 디렉터리와 설정만 표시했다.
-`.env`는 로컬 환경설정 파일이며 Git 추적 대상에서 제외한다.
-`build/`와 `.gradle/`은 각각 빌드 산출물과 캐시를 담는다.
+`backend/.env`는 로컬 환경설정 파일이며 Git 추적 대상에서 제외한다.
+`backend/build/`와 `backend/.gradle/`은 각각 빌드 산출물과 캐시를 담는다.
 
 ## 주요 구성요소
 
