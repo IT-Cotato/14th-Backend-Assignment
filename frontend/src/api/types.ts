@@ -48,3 +48,74 @@ export interface User {
   generation: number
   part: Part
 }
+
+// ---- 스터디 모집글 ----
+export type StudyStatus = 'RECRUITING' | 'CLOSED'
+
+export const STATUS_LABELS: Record<StudyStatus, string> = {
+  RECRUITING: '모집 중',
+  CLOSED: '모집 마감',
+}
+
+export interface Author {
+  nickname: string
+  generation: number
+  part: Part
+}
+
+export interface PageResponse<T> {
+  content: T[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export interface StudyPostListItem {
+  postId: number
+  title: string
+  studyStatus: StudyStatus
+  author: Author
+  commentCount: number
+  createdAt: string
+}
+
+export interface StudyPostDetail {
+  postId: number
+  title: string
+  content: string
+  studyStatus: StudyStatus
+  author: Author
+  isAuthor: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StudyPostCreateRequest {
+  title: string
+  content: string
+}
+
+// 바꿀 필드만 보낸다
+export interface StudyPostUpdateRequest {
+  title?: string
+  content?: string
+  studyStatus?: StudyStatus
+}
+
+export interface StudyPostSearchParams {
+  keyword?: string
+  status?: StudyStatus
+  part?: Part
+  page?: number
+  size?: number
+}
+
+// ---- 댓글 (스터디 신청) ----
+export interface Comment {
+  commentId: number
+  content: string
+  author: Author
+  isAuthor: boolean
+  createdAt: string
+}
