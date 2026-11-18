@@ -90,7 +90,7 @@ export default function StudiesPage() {
         <label htmlFor="keyword" className="sr-only">검색어</label>
         <input id="keyword" value={keywordInput} onChange={(e) => setKeywordInput(e.target.value)}
           placeholder="제목이나 내용으로 검색"
-          className="min-w-0 flex-1 rounded border border-gray-300 px-3 py-1.5 focus:border-indigo-500 focus:outline-none" />
+          className="w-full min-w-0 rounded border border-gray-300 px-3 py-1.5 focus:border-indigo-500 focus:outline-none sm:w-auto sm:flex-1" />
         <label htmlFor="status" className="sr-only">모집 상태</label>
         <select id="status" value={status} onChange={(e) => updateParams({ status: e.target.value, keyword: keywordInput.trim() })}
           className="rounded border border-gray-300 px-2 py-1.5">
