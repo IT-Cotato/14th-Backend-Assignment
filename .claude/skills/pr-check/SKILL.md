@@ -67,8 +67,8 @@ Rules·Skill·Hook은 경로, 연결 설정, 지시 충돌도 확인한다.
 | 설정·의존성 | 영향받는 빌드·실행 경로 |
 | Rules·Skill·Hook | 정적 검토와 실제 적용·호출·동작 확인을 구분 |
 
-Windows PowerShell에서는 프로젝트 루트의 Gradle Wrapper를 사용한다.
-빌드·테스트는 `.\gradlew.bat build`, 테스트만 할 때는 `.\gradlew.bat test`를 사용한다.
+Windows PowerShell에서는 `backend/` 디렉터리의 Gradle Wrapper를 사용한다.
+빌드·테스트는 `backend/`에서 `.\gradlew.bat build`, 테스트만 할 때는 `.\gradlew.bat test`를 사용한다.
 `build`에 테스트가 포함되므로 이유 없이 같은 검증을 반복하지 않는다.
 
 기존 결과는 대상 코드와 실행 조건이 현재에도 유효한지 확인한 뒤 활용한다.
