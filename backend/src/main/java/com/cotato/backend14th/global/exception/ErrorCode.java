@@ -25,12 +25,12 @@ public enum ErrorCode {
     NOT_POST_AUTHOR(HttpStatus.FORBIDDEN, "STUDY-002", "모집글 작성자가 아니에요."),
     STUDY_POST_CLOSED(HttpStatus.CONFLICT, "STUDY-003", "모집이 마감된 글에는 댓글을 쓸 수 없어요."),
 
+    // COMMENT
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-001", "존재하지 않는 댓글이에요."),
+    NOT_COMMENT_AUTHOR(HttpStatus.FORBIDDEN, "COMMENT-002", "댓글 작성자가 아니에요."),
+
     // BOOK
     BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOK-001", "책을 찾을 수 없습니다.");
-
-    // 나중에 도메인이 늘어나면 이렇게 그룹을 추가하면 돼요
-    // APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT-001", "지원자를 찾을 수 없습니다."),
-    // DOCUMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "DOCUMENT-001", "서류를 찾을 수 없습니다."),
 
     private final HttpStatus httpStatus;
     private final String code;
