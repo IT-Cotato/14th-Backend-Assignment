@@ -54,7 +54,9 @@ Gradle, Spring Data JPA, MySQL을 사용하며 SpringDoc으로 API 문서를 제
 │   │   ├── components/             # 헤더, 레이아웃, 폼 입력, 댓글 영역 등 공통 컴포넌트
 │   │   ├── pages/                  # 화면 (로그인, 회원가입, 마이페이지, 스터디 목록·상세·작성/수정)
 │   │   └── utils/                  # 메시지 처리 등 보조 함수
-│   ├── package.json                # 의존성·스크립트 (dev, build, lint)
+│   ├── e2e/                        # Playwright E2E 테스트 (인증·모집글·댓글 시나리오와 API·화면 헬퍼)
+│   ├── package.json                # 의존성·스크립트 (dev, build, lint, test:e2e)
+│   ├── playwright.config.ts        # E2E 설정 (워커 1개, 실패 시 스크린샷, 프론트 서버 자동 실행)
 │   ├── vite.config.ts              # 3000번 포트 고정, Tailwind 플러그인
 │   └── .env.example                # 선택 환경변수 이름 (VITE_API_BASE_URL)
 ├── .gitattributes                  # 줄바꿈 등 Git 속성
@@ -177,7 +179,8 @@ Entity와 요청·응답 DTO는 분리되어 있다.
 | application.yml | 애플리케이션 이름, 기본 프로필, `.env` 불러오기, JWT 설정(`JWT_SECRET`, 유효 시간) |
 | application-local.yml | 로컬 MySQL 연결과 JPA 설정 |
 | backend/src/test/ | `contextLoads()`와 서비스·JWT 단위 테스트 (Spring·DB 없이 실행) |
-| frontend/ | `npm run build`, `npm run lint`로 검증. E2E 테스트는 아직 없음 |
+| frontend/ | `npm run build`, `npm run lint`로 검증 |
+| frontend/e2e/ | `auth.spec.ts`, `study.spec.ts`, `comment.spec.ts`. 가입·글 작성 같은 준비는 `helpers/api.ts`로 API를 호출해 만들고, 화면 조작은 브라우저로 검증. 백엔드를 먼저 실행하고 `npm run test:e2e` |
 
 ## 문서 관리
 

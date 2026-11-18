@@ -37,6 +37,7 @@ React, TypeScript, Vite, Tailwind CSS, React Router, axios를 사용한다. Next
 | 개발·환경설정·검증·협업 기준 확인 | `docs/conventions.md` |
 | 브랜치·커밋·PR 작업 | `.claude/rules/git-workflow.md` |
 | Controller 개발·수정 | `.claude/rules/controller.md` |
+| E2E 테스트(`frontend/e2e/`) 작성·수정 | `.claude/rules/e2e.md` |
 
 Git Rule은 항상 적용하고, Controller Rule은 해당 파일의 `paths` 조건에 따라 적용한다.
 문서와 코드가 다르면 차이를 알리고 현재 상태와 변경 목표를 구분한다.
@@ -63,9 +64,11 @@ cd frontend
 npm run dev     # 개발 서버 (3000번 포트)
 npm run build   # 타입 검사와 빌드
 npm run lint    # 린트
+npm run test:e2e  # Playwright E2E 테스트 (백엔드 실행 필요)
 ```
 
 - API를 호출하는 화면을 확인하려면 백엔드(`bootRun`)를 먼저 실행한다.
+- E2E는 백엔드(8080)를 먼저 실행한 뒤 돌린다. 프론트 서버는 Playwright가 띄운다. 작성 규칙은 `.claude/rules/e2e.md`에 있다.
 
 ## 로컬 실행 환경
 

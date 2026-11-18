@@ -123,7 +123,11 @@ cd frontend
 npm run dev     # 개발 서버 (3000번 포트)
 npm run build   # 타입 검사와 빌드
 npm run lint    # 린트
+npm run test:e2e  # Playwright E2E 테스트 (백엔드 실행 필요)
 ```
+
+E2E 테스트는 백엔드(8080)와 DB를 먼저 실행한 상태에서 돌린다. 프론트 서버(3000)는 Playwright가 필요할 때 띄운다.
+테스트는 같은 DB를 사용하며, 매번 새로 만든 `e2e-` 접두사 이메일의 계정과 데이터가 남는다.
 
 `build`는 기본 테스트를 포함한다.
 같은 변경에 대해 `build`가 성공했다면 특별한 이유 없이 `test`를 다시 실행하지 않아도 된다.
