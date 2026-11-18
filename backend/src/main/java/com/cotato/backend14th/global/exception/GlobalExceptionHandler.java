@@ -11,6 +11,7 @@ import com.cotato.backend14th.global.common.response.ErrorResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @Slf4j
 @RestControllerAdvice
@@ -49,6 +50,18 @@ public class GlobalExceptionHandler {
     ) {
         // 서버에 띄우는 로그
         log.warn("[NotReadable] {} {} | {}", request.getMethod(), request.getRequestURI(), e.getMessage());
+
+        return ResponseEntity
+                .status(ErrorCode.INVALID_INPUT.getHttpStatus())
+                .body(ErrorResponse.of(ErrorCode.INVALID_INPUT, request));
+    }
+
+    // status=abc 처럼 쿼리 값이나 경로 값의 형식이 올바르지 않을 때도 400으로 처리해요
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(
+            MethodArgumentTypeMismatchException e, HttpServletRequest request
+    ) {
+        log.warn("[TypeMismatch] {} {} | {}", request.getMethod(), request.getRequestURI(), e.getMessage());
 
         return ResponseEntity
                 .status(ErrorCode.INVALID_INPUT.getHttpStatus())
