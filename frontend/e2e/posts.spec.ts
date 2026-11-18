@@ -60,6 +60,23 @@ test.describe('스터디 모집글', () => {
     await expect(page.getByText(other)).toHaveCount(0)
   })
 
+  test('파트 필터를 고르면 그 파트 작성자의 글만 목록에 나온다', async ({ page, request }) => {
+    const backend = newUser('BE')
+    const frontend = newUser('FE')
+    await signupViaApi(request, backend)
+    await signupViaApi(request, frontend)
+    const keyword = uniqueTitle('파트필터')
+    await createPostViaApi(request, backend, `${keyword} 백엔드글`)
+    await createPostViaApi(request, frontend, `${keyword} 프론트글`)
+
+    await page.goto('/studies')
+    await page.getByLabel('검색어').fill(keyword)
+    await page.getByLabel('작성자 파트').selectOption('FE')
+
+    await expect(page.getByRole('link', { name: /프론트글/ })).toBeVisible()
+    await expect(page.getByText('백엔드글')).toHaveCount(0)
+  })
+
   test('조건에 맞는 글이 없으면 안내 문구가 보인다', async ({ page }) => {
     await page.goto('/studies')
     await page.getByLabel('검색어').fill(uniqueTitle('절대없는검색어'))
@@ -99,6 +116,19 @@ test.describe('스터디 모집글', () => {
 
     await expect(page.getByRole('heading', { name: newTitle })).toBeVisible()
     await expect(page.getByText('(수정됨)')).toBeVisible()
+  })
+
+  test('수정 화면에서 모집 상태를 마감으로 바꾸면 상세 화면에 마감으로 보인다', async ({ page, request }) => {
+    const user = await createUserAndLogin(page, request)
+    const postId = await createPostViaApi(request, user, uniqueTitle('상태변경'))
+
+    await page.goto(`/studies/${postId}/edit`)
+    await page.getByLabel('모집 상태').selectOption('CLOSED')
+    await page.getByRole('button', { name: '수정하기' }).click()
+
+    await expect(page).toHaveURL(`/studies/${postId}`)
+    await expect(page.getByText('모집 마감', { exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: '모집 다시 열기' })).toBeVisible()
   })
 
   test('작성자가 글을 삭제하면 목록으로 돌아가고 그 글은 더 이상 열리지 않는다', async ({ page, request }) => {

@@ -19,6 +19,8 @@ test.describe('인증', () => {
     await page.getByRole('link', { name: '마이페이지' }).click()
     await expect(page.getByRole('heading', { name: '마이페이지' })).toBeVisible()
     await expect(page.getByText(user.email)).toBeVisible()
+    await expect(page.getByText(`${user.generation}기`)).toBeVisible()
+    await expect(page.getByText('백엔드 (BE)')).toBeVisible()
   })
 
   test('이미 가입된 이메일로 가입하면 오류 메시지가 보인다', async ({ page, request }) => {
@@ -47,6 +49,22 @@ test.describe('인증', () => {
     await page.getByRole('button', { name: '가입하기' }).click()
 
     await expect(page.getByText('비밀번호는 8자 이상이에요.')).toBeVisible()
+    await expect(page).toHaveURL('/signup')
+  })
+
+  test('기수에 0을 입력하면 가입 전에 안내가 보인다', async ({ page }) => {
+    const user = newUser()
+
+    await page.goto('/signup')
+    await page.getByLabel('이메일').fill(user.email)
+    await page.getByLabel('비밀번호').fill(user.password)
+    await page.getByLabel('이름').fill(user.name)
+    await page.getByLabel('닉네임').fill(user.nickname)
+    await page.getByLabel('기수').fill('0')
+    await page.getByLabel('파트').selectOption('BE')
+    await page.getByRole('button', { name: '가입하기' }).click()
+
+    await expect(page.getByText('기수는 1 이상의 정수예요.')).toBeVisible()
     await expect(page).toHaveURL('/signup')
   })
 

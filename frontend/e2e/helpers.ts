@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto'
 import { expect, type APIRequestContext, type Page } from '@playwright/test'
 
-const API_URL = process.env.E2E_API_URL ?? 'http://localhost:8080/api'
+export const API_URL = process.env.E2E_API_URL ?? 'http://localhost:8080/api'
 
 export interface TestUser {
   email: string
@@ -9,11 +9,11 @@ export interface TestUser {
   name: string
   nickname: string
   generation: number
-  part: 'BE'
+  part: 'PM' | 'DE' | 'BE' | 'FE'
 }
 
 // 테스트마다 새 계정을 만든다. 이메일은 e2e- 로 시작하고, 비밀번호는 실행할 때마다 무작위로 만든다.
-export function newUser(): TestUser {
+export function newUser(part: TestUser['part'] = 'BE'): TestUser {
   const id = randomBytes(4).toString('hex')
   return {
     email: `e2e-${id}-${Date.now()}@test.com`,
@@ -21,7 +21,7 @@ export function newUser(): TestUser {
     name: '테스터',
     nickname: `e${id}`,
     generation: 14,
-    part: 'BE',
+    part,
   }
 }
 
@@ -35,7 +35,7 @@ export async function signupViaApi(request: APIRequestContext, user: TestUser) {
   expect(res.status(), '회원가입 API가 201을 돌려줘야 해요 (백엔드가 켜져 있나요?)').toBe(201)
 }
 
-async function loginViaApi(request: APIRequestContext, user: TestUser): Promise<string> {
+export async function loginViaApi(request: APIRequestContext, user: TestUser): Promise<string> {
   const res = await request.post(`${API_URL}/auth/login`, { data: { email: user.email, password: user.password } })
   expect(res.status()).toBe(200)
   return (await res.json()).data.accessToken
