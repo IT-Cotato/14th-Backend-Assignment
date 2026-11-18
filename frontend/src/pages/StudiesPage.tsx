@@ -92,7 +92,7 @@ export default function StudiesPage() {
           placeholder="제목이나 내용으로 검색"
           className="min-w-0 flex-1 rounded border border-gray-300 px-3 py-1.5 focus:border-indigo-500 focus:outline-none" />
         <label htmlFor="status" className="sr-only">모집 상태</label>
-        <select id="status" value={status} onChange={(e) => updateParams({ status: e.target.value })}
+        <select id="status" value={status} onChange={(e) => updateParams({ status: e.target.value, keyword: keywordInput.trim() })}
           className="rounded border border-gray-300 px-2 py-1.5">
           <option value="">전체 상태</option>
           {(Object.keys(STATUS_LABELS) as StudyStatus[]).map((s) => (
@@ -100,7 +100,7 @@ export default function StudiesPage() {
           ))}
         </select>
         <label htmlFor="part" className="sr-only">작성자 파트</label>
-        <select id="part" value={part} onChange={(e) => updateParams({ part: e.target.value })}
+        <select id="part" value={part} onChange={(e) => updateParams({ part: e.target.value, keyword: keywordInput.trim() })}
           className="rounded border border-gray-300 px-2 py-1.5">
           <option value="">전체 파트</option>
           {(Object.keys(PART_LABELS) as Part[]).map((p) => (
