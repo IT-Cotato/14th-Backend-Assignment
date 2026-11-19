@@ -2,6 +2,7 @@
 
 - ERDCloud: (링크 추가 예정)
 - 이미지: `erd.png`
+- DDL: [`schema.sql`](./schema.sql) (엔티티에서 생성, ERDCloud 가져오기용)
 
 ![ERD](./erd.png)
 
@@ -17,7 +18,7 @@
 | name | VARCHAR(50) | NOT NULL | |
 | nickname | VARCHAR(10) | NOT NULL | 2~10자 |
 | generation | INT | NOT NULL | 1 이상 |
-| part | VARCHAR(10) | NOT NULL | `PM`/`DE`/`BE`/`FE` (문자열 Enum) |
+| part | ENUM('PM','DE','BE','FE') | NOT NULL | 문자열 Enum |
 | created_at | DATETIME(6) | | |
 | updated_at | DATETIME(6) | | |
 
@@ -31,7 +32,7 @@
 | user_id | BIGINT | FK → users.id, NOT NULL | 작성자 |
 | title | VARCHAR(50) | NOT NULL | |
 | content | VARCHAR(2000) | NOT NULL | |
-| study_status | VARCHAR(20) | NOT NULL | `RECRUITING`/`CLOSED` (문자열 Enum) |
+| study_status | ENUM('RECRUITING','CLOSED') | NOT NULL | 문자열 Enum |
 | created_at | DATETIME(6) | | |
 | updated_at | DATETIME(6) | | |
 
