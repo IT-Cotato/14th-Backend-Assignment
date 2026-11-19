@@ -1,7 +1,7 @@
 # 코테이토 스터디 매칭 플랫폼 (인증, 모집글, 댓글)
 
 - 이슈: #133
-- PR: (PR 생성 후 추가)
+- PR: #135 (https://github.com/IT-Cotato/14th-Backend-Assignment/pull/135)
 - 작성일: 2026-11-19
 
 ## 배경
