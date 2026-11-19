@@ -21,8 +21,11 @@ export default function StudyFormPage() {
 
   useEffect(() => {
     if (!isEdit) return
+    // 늦게 도착한 이전 요청의 응답이 사용자가 고친 입력값을 덮어쓰지 않게 해요
+    let ignore = false
     getStudyPost(postId)
       .then((post) => {
+        if (ignore) return
         if (!post.isAuthor) {
           setError('모집글 작성자만 수정할 수 있어요.')
           return
@@ -31,8 +34,11 @@ export default function StudyFormPage() {
         setContent(post.content)
         setStudyStatus(post.studyStatus)
       })
-      .catch((err) => setError(getErrorMessage(err, '모집글을 불러오지 못했어요.')))
-      .finally(() => setLoading(false))
+      .catch((err) => !ignore && setError(getErrorMessage(err, '모집글을 불러오지 못했어요.')))
+      .finally(() => !ignore && setLoading(false))
+    return () => {
+      ignore = true
+    }
   }, [isEdit, postId])
 
   const handleSubmit = async (e: FormEvent) => {
