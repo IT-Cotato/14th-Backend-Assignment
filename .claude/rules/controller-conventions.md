@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/main/java/**/controller/**"
+  - "backend/src/main/java/**/controller/**"
 ---
 
 # Controller 작성 규칙
