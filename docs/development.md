@@ -66,4 +66,6 @@ Python 3의 표준 라이브러리만 사용한다.
 python -m unittest discover -s .claude/hooks/tests
 ```
 
-`protect-env.py`는 `.env`, `.env.*` 파일의 Read/Edit/Write를 종료 코드 2로 막는다. 값이 없는 `.env.example`만 허용한다. Bash나 외부 프로그램을 통한 접근까지 막는 보안 경계는 아니므로 셸에서 비밀 파일을 열지 않는 원칙을 유지한다.
+`protect-env.py`는 `.env`, `.env.*` 파일의 Read/Edit/Write를 종료 코드 2로 막는다. 값이 없는 `.env.example`만 허용한다.
+
+`guard-e2e.py`는 `frontend/e2e/` 아래 파일을 Write/Edit할 때 `waitForTimeout` 같은 고정 대기와 문자열로 적은 비밀번호(`password: '...'`)가 있으면 종료 코드 2로 막는다. E2E를 짤 때 반복해서 나오던 실수를 막기 위한 것이다. Bash나 외부 프로그램을 통한 접근까지 막는 보안 경계는 아니므로 셸에서 비밀 파일을 열지 않는 원칙을 유지한다.

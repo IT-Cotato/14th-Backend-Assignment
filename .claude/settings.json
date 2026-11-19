@@ -19,6 +19,15 @@
             "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/.claude/hooks/protect-env.py\""
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-e2e.py\""
+          }
+        ]
       }
     ]
   }
