@@ -29,18 +29,28 @@ API 명세는 `docs/api-spec.md`, ERD는 `docs/erd/`를 따른다.
     └── frontend/    src/, e2e/, package.json, playwright.config.ts, vite.config.ts
 
     backend/src/main/java/com/cotato/backend14th/
-    ├── domain/<도메인>/
+    ├── domain/<도메인>/        auth, user, studypost, comment, book(연습용)
     │   ├── controller/
+    │   ├── service/
     │   ├── dto/
     │   ├── entity/
     │   └── repository/
     └── global/
         ├── common/entity/      BaseEntity
-        ├── common/response/    ApiResponse, ErrorResponse, ResponseUtils
+        ├── common/response/    ApiResponse, ErrorResponse, ResponseUtils, PageResponse
         ├── config/             SwaggerConfig, SecurityConfig
-        └── exception/          ErrorCode, Backend14thException, GlobalExceptionHandler
+        ├── exception/          ErrorCode, Backend14thException, GlobalExceptionHandler
+        └── security/           JwtProvider, JwtAuthenticationFilter, JwtAuthenticationEntryPoint
 
-- 새 도메인은 `domain/<도메인>/` 아래에 위 네 패키지 구조를 그대로 만든다.
+    frontend/src/
+    ├── api/          axios 클라이언트(토큰 첨부, 401 처리), API 함수, 타입
+    ├── auth/         AuthProvider(로그인 상태), RequireAuth(로그인 필요 화면)
+    ├── components/   Header, CommentSection, Pagination, StatusMessage
+    ├── pages/        화면 6개 (회원가입, 로그인, 마이페이지, 모집글 목록·상세·작성/수정)
+    └── utils/
+
+- 새 도메인은 `domain/<도메인>/` 아래에 위 다섯 패키지 구조를 그대로 만든다.
+  (`book`은 연습용이라 `service` 없이 Controller가 Repository를 직접 호출한다.)
 - 여러 도메인이 공유하는 코드만 `global/`에 둔다.
 
 ## 주요 명령어
@@ -48,8 +58,10 @@ API 명세는 `docs/api-spec.md`, ERD는 `docs/erd/`를 따른다.
 ### 백엔드 (반드시 `backend/`에서 실행한다. `.env`를 실행 위치에서 읽는다)
 
 - 빌드: `./gradlew build` (Windows: `.\gradlew.bat build`)
-- 테스트: `./gradlew test`
+- 테스트: `./gradlew test` (`contextLoads`가 함께 돌아서 MySQL이 켜져 있어야 한다)
+- 서비스 단위 테스트만: `./gradlew test --tests "*ServiceTest"` (Mockito, DB 불필요)
 - 실행: `./gradlew bootRun`
+- `.env`에 DB 접속 정보와 `JWT_SECRET`(32바이트 이상), `JWT_EXPIRATION_MS`가 필요하다. (`backend/.env.example` 참고)
 - Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 ### 프론트엔드 (`frontend/`에서 실행한다)
@@ -58,6 +70,8 @@ API 명세는 `docs/api-spec.md`, ERD는 `docs/erd/`를 따른다.
 - 개발 서버: `npm run dev` (http://localhost:3000, 포트 고정)
 - 빌드: `npm run build` (타입 검사 포함)
 - 린트: `npm run lint` (oxlint)
+- E2E: `npm run test:e2e` (Playwright). 백엔드를 먼저 켜야 한다. 프론트 개발 서버는 자동으로 켜진다.
+  처음 한 번은 `npx playwright install chromium`으로 테스트용 브라우저를 설치한다.
 - API 주소는 `VITE_API_BASE_URL` 환경변수로 넣는다. (`frontend/.env.example` 참고)
 
 ## 작업 방식

@@ -23,6 +23,7 @@ public class SignupRequest {
     private String password;
 
     @NotBlank
+    @Size(max = 50)
     private String name;
 
     @NotBlank

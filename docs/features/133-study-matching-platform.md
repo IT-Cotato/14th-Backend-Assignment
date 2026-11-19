@@ -70,7 +70,7 @@
 
 | # | Method | URL | 권한 | 요청 본문 | 성공 응답 | 에러 |
 |---|---|---|---|---|---|---|
-| 1 | POST | `/api/auth/signup` | 공개 | `email`, `password`(8자 이상), `name`, `nickname`(2~10자), `generation`(1 이상), `part` | `201` `{ userId }` | 400 `COMMON-003`, 409 `USER-001` |
+| 1 | POST | `/api/auth/signup` | 공개 | `email`, `password`(8자 이상), `name`(1~50자), `nickname`(2~10자), `generation`(1 이상), `part` | `201` `{ userId }` | 400 `COMMON-003`, 409 `USER-001` |
 | 2 | POST | `/api/auth/login` | 공개 | `email`, `password` | `200` `{ accessToken, tokenType: "Bearer" }` | 401 `USER-002` |
 | 3 | POST | `/api/auth/logout` | 로그인 | 없음 | `204` 본문 없음 | 401 `COMMON-004` |
 | 4 | GET | `/api/users/me` | 로그인 | 없음 | `200` `{ userId, email, name, nickname, generation, part }` | 401 `COMMON-004` |
@@ -145,7 +145,6 @@
 
 ## 남은 이슈
 - **버전 차이**: 워크북 기준은 Java 17 / Spring Boot 3.x지만 이 레포는 Java 21 / Spring Boot 4.1.1이다. CLAUDE.md에서 버전 변경을 금지해서 그대로 두었다.
-- **CLAUDE.md 갱신**: 도메인 구조가 4개 패키지로 적혀 있어서 `service` 패키지를 반영해야 한다.
 - **전체 테스트 재실행**: 단위 테스트를 추가한 뒤에 `contextLoads`를 포함한 `.\gradlew.bat test` 전체는 다시 실행하지 않았다.
 - **Repository 테스트 없음**: 검색 JPQL(`search`), 댓글 수 집계, 벌크 delete는 단위 테스트에서 가짜 객체로 바꿨기 때문에 실제 쿼리는 E2E로만 확인했다. `@DataJpaTest`로 따로 검사할 수 있다.
 - **404 화면 없음**: 없는 주소로 들어가면 `/studies`로 보낸다. 주소를 잘못 입력했을 때 알아채기 어렵다.

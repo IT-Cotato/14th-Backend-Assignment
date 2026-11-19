@@ -141,7 +141,7 @@
 | --- | --- | --- | --- |
 | `email` | string | O | 이메일 형식 |
 | `password` | string | O | 8자 이상 |
-| `name` | string | O | 비어 있지 않음 |
+| `name` | string | O | 1~50자 |
 | `nickname` | string | O | 2~10자 |
 | `generation` | number | O | 1 이상의 정수 |
 | `part` | string | O | `PM`, `DE`, `BE`, `FE` 중 하나 |
@@ -182,6 +182,7 @@
 
 | HTTP | ErrorCode | 상황 |
 | --- | --- | --- |
+| 400 | `INVALID_INPUT` | 이메일이나 비밀번호가 비어 있음 |
 | 401 | `INVALID_CREDENTIALS` | 이메일이 없거나 비밀번호가 틀림 (둘을 구분하지 않는다) |
 
 ### 3. 로그아웃 `POST /api/auth/logout` (로그인)
@@ -271,7 +272,7 @@
 | `status` | X | 없음(전체) | `RECRUITING` 또는 `CLOSED` |
 | `part` | X | 없음(전체) | `PM`, `DE`, `BE`, `FE`. **작성자의 파트**가 같은 글만 |
 | `page` | X | 0 | 페이지 번호 (0부터) |
-| `size` | X | 10 | 페이지 크기 |
+| `size` | X | 10 | 페이지 크기 (1~100) |
 
 **Response `200 OK`** 최신순(`createdAt` 내림차순) 정렬
 
@@ -303,7 +304,7 @@
 
 | HTTP | ErrorCode | 상황 |
 | --- | --- | --- |
-| 400 | `INVALID_INPUT` | `status` 나 `part` 값이 올바르지 않음 |
+| 400 | `INVALID_INPUT` | `status` 나 `part` 값이 올바르지 않음, `page` 가 음수, `size` 가 1~100을 벗어남 |
 
 ### 7. 모집글 상세 `GET /api/study-posts/{postId}` (공개)
 
@@ -418,10 +419,10 @@
 
 **Query**
 
-| 이름 | 필수 | 기본값 |
-| --- | --- | --- |
-| `page` | X | 0 |
-| `size` | X | 20 |
+| 이름 | 필수 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `page` | X | 0 | 페이지 번호 (0부터) |
+| `size` | X | 20 | 페이지 크기 (1~100) |
 
 **Response `200 OK`** 오래된 순(`createdAt` 오름차순) 정렬
 
@@ -451,6 +452,7 @@
 
 | HTTP | ErrorCode | 상황 |
 | --- | --- | --- |
+| 400 | `INVALID_INPUT` | `page` 가 음수, `size` 가 1~100을 벗어남 |
 | 404 | `STUDY_POST_NOT_FOUND` | 글이 없음 |
 
 ### 12. 댓글 수정 `PATCH /api/comments/{commentId}` (작성자)
