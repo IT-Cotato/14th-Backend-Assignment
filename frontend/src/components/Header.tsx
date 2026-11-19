@@ -25,6 +25,9 @@ export function Header() {
           🥔 코테이토 스터디
         </Link>
         <nav aria-label="주요 메뉴" className="flex flex-wrap items-center gap-1 sm:gap-2">
+          <NavLink to="/studies" end className={navLinkClass}>
+            스터디 목록
+          </NavLink>
           {isLoggedIn ? (
             <>
               <span className="px-2 text-sm text-stone-700">

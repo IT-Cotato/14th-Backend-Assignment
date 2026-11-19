@@ -69,3 +69,49 @@ export interface MyInfo {
   generation: number
   part: Part
 }
+
+export type StudyStatus = 'RECRUITING' | 'CLOSED'
+
+export const STUDY_STATUS_LABEL: Record<StudyStatus, string> = {
+  RECRUITING: '모집 중',
+  CLOSED: '모집 마감',
+}
+
+export interface StudyPostSummary {
+  postId: number
+  title: string
+  studyStatus: StudyStatus
+  author: Author
+  commentCount: number
+  createdAt: string
+}
+
+export interface StudyPostDetail {
+  postId: number
+  title: string
+  content: string
+  studyStatus: StudyStatus
+  author: Author
+  isAuthor: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StudyPostSearchParams {
+  keyword?: string
+  status?: StudyStatus
+  part?: Part
+  page?: number
+  size?: number
+}
+
+export interface StudyPostCreateRequest {
+  title: string
+  content: string
+}
+
+export interface StudyPostUpdateRequest {
+  title?: string
+  content?: string
+  studyStatus?: StudyStatus
+}

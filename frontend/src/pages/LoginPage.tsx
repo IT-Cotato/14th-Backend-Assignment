@@ -12,7 +12,7 @@ interface LoginLocationState {
   message?: string
 }
 
-const AFTER_LOGIN_PATH = '/'
+const AFTER_LOGIN_PATH = '/studies'
 
 export function LoginPage() {
   const navigate = useNavigate()
