@@ -78,3 +78,65 @@ export interface User {
   generation: number
   part: Part
 }
+
+// ---------- 스터디 모집글 ----------
+
+export type StudyStatus = 'RECRUITING' | 'CLOSED'
+
+export const STATUS_OPTIONS: { value: StudyStatus; label: string }[] = [
+  { value: 'RECRUITING', label: '모집 중' },
+  { value: 'CLOSED', label: '모집 마감' },
+]
+
+export function statusLabel(status: StudyStatus): string {
+  return STATUS_OPTIONS.find((option) => option.value === status)?.label ?? status
+}
+
+export function isPart(value: string | null): value is Part {
+  return PART_OPTIONS.some((option) => option.value === value)
+}
+
+export function isStudyStatus(value: string | null): value is StudyStatus {
+  return STATUS_OPTIONS.some((option) => option.value === value)
+}
+
+// 목록의 항목 하나
+export interface StudyPostSummary {
+  postId: number
+  title: string
+  studyStatus: StudyStatus
+  author: Author
+  commentCount: number
+  createdAt: string
+}
+
+export interface StudyPostDetail {
+  postId: number
+  title: string
+  content: string
+  studyStatus: StudyStatus
+  author: Author
+  isAuthor: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StudyPostListParams {
+  keyword?: string
+  status?: StudyStatus
+  part?: Part
+  page?: number
+  size?: number
+}
+
+export interface StudyPostCreateRequest {
+  title: string
+  content: string
+}
+
+// 바꿀 필드만 보내요
+export interface StudyPostUpdateRequest {
+  title?: string
+  content?: string
+  studyStatus?: StudyStatus
+}
