@@ -47,7 +47,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/study-posts").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/api/study-posts/*").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/study-posts/*").authenticated()
-                        // 나머지는 공개 (모집글 목록·상세 포함. 댓글 API는 다음 순서에서 추가해요)
+                        .requestMatchers(HttpMethod.POST, "/api/study-posts/*/comments").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/comments/*").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/comments/*").authenticated()
+                        // 나머지는 공개 (모집글 목록·상세, 댓글 목록)
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(
