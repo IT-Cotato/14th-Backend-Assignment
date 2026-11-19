@@ -115,3 +115,11 @@ export interface StudyPostUpdateRequest {
   content?: string
   studyStatus?: StudyStatus
 }
+
+export interface StudyPostComment {
+  commentId: number
+  content: string
+  author: Author
+  isAuthor: boolean
+  createdAt: string
+}

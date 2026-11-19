@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { getErrorMessage } from '../api/errors'
 import { deleteStudyPost, getStudyPost, studyPostKeys, updateStudyPost } from '../api/studyPosts'
 import type { StudyStatus } from '../api/types'
+import { CommentSection } from '../components/CommentSection'
 import { StatusBadge } from '../components/StatusBadge'
 import {
   AuthorInfo,
@@ -112,6 +113,8 @@ export function StudyDetailPage() {
           </div>
         )}
       </article>
+
+      <CommentSection postId={post.postId} studyStatus={post.studyStatus} />
     </div>
   )
 }
