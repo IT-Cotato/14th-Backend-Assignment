@@ -116,7 +116,7 @@ function CommentForm({ postId, onCreated }: { postId: number; onCreated: () => v
     <form onSubmit={handleSubmit} noValidate className="mb-5 space-y-2">
       {mutation.isError && <ErrorMessage>{getErrorMessage(mutation.error)}</ErrorMessage>}
       <label htmlFor="new-comment" className="block text-sm font-medium text-stone-700">
-        신청 댓글
+        신청 내용
       </label>
       <textarea
         id="new-comment"
