@@ -3,7 +3,7 @@
 ## 패키지 구조
 
 ```
-src/main/java/com/cotato/backend14th/
+backend/src/main/java/com/cotato/backend14th/
 ├── domain/                        # 도메인별 비즈니스 로직
 │   └── {도메인}/
 │       ├── controller/            # @RestController
