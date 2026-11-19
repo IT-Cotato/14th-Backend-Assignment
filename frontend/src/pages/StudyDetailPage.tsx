@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getErrorMessage } from '../api/error'
 import { deleteStudyPost, getStudyPost, updateStudyPost } from '../api/studyPosts'
 import { partLabel, statusLabel, type StudyPostDetail } from '../api/types'
+import { CommentSection } from '../components/CommentSection'
 import { ErrorMessage, Loading } from '../components/StatusMessage'
 import { formatDateTime } from '../utils/format'
 
@@ -170,7 +171,7 @@ export function StudyDetailPage() {
         )}
       </div>
 
-      {/* 댓글(신청) 영역은 다음 묶음에서 추가해요 */}
+      <CommentSection postId={post.postId} isClosed={post.studyStatus === 'CLOSED'} />
 
       <Link to="/studies" className="inline-block text-sm text-gray-700 underline">
         목록으로

@@ -140,3 +140,18 @@ export interface StudyPostUpdateRequest {
   content?: string
   studyStatus?: StudyStatus
 }
+
+// ---------- 댓글 (= 스터디 신청) ----------
+
+export interface Comment {
+  commentId: number
+  content: string
+  author: Author
+  isAuthor: boolean
+  createdAt: string
+}
+
+// 작성·수정 공용
+export interface CommentRequest {
+  content: string
+}
