@@ -41,3 +41,13 @@ out/
 .env.*
 .claude/settings.local.json
 __pycache__/
+!.env.example
+
+### Frontend / E2E ###
+node_modules/
+dist/
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+*.local

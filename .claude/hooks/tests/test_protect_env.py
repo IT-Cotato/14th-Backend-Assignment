@@ -17,14 +17,14 @@ class ProtectEnvTest(unittest.TestCase):
 
     def test_env_access_is_blocked(self):
         for tool in ("Read", "Edit", "Write"):
-            for path in (".env", "config/.env.local", "C:\\project\\.env", "/tmp/한글 폴더/.ENV"):
+            for path in (".env", "backend/.env", "config/.env.local", "C:\\project\\.env", "/tmp/한글 폴더/.ENV"):
                 with self.subTest(tool=tool, path=path):
                     result = self.invoke(json.dumps({"tool_name": tool, "tool_input": {"file_path": path}}))
                     self.assertEqual(result.returncode, 2)
                     self.assertTrue(result.stderr)
 
     def test_source_files_pass(self):
-        for path in ("src/Main.java", "docs/environment.md", ".envrc"):
+        for path in ("backend/src/Main.java", "docs/environment.md", ".envrc", "backend/.env.example"):
             with self.subTest(path=path):
                 result = self.invoke(json.dumps({"tool_name": "Write", "tool_input": {"file_path": path}}))
                 self.assertEqual(result.returncode, 0)
