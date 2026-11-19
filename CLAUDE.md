@@ -54,7 +54,11 @@ API 명세는 `docs/api-spec.md`, ERD는 `docs/erd/`를 따른다.
 
 ### 프론트엔드 (`frontend/`에서 실행한다)
 
-- (프론트엔드 생성 후 추가)
+- 의존성 설치: `npm install`
+- 개발 서버: `npm run dev` (http://localhost:3000, 포트 고정)
+- 빌드: `npm run build` (타입 검사 포함)
+- 린트: `npm run lint` (oxlint)
+- API 주소는 `VITE_API_BASE_URL` 환경변수로 넣는다. (`frontend/.env.example` 참고)
 
 ## 작업 방식
 
