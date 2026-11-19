@@ -44,7 +44,10 @@ public class SecurityConfig {
                         // 로그인이 필요한 API
                         .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
-                        // 나머지는 공개 (모집글·댓글 API는 다음 순서에서 추가해요)
+                        .requestMatchers(HttpMethod.POST, "/api/study-posts").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/api/study-posts/*").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/study-posts/*").authenticated()
+                        // 나머지는 공개 (모집글 목록·상세 포함. 댓글 API는 다음 순서에서 추가해요)
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(
