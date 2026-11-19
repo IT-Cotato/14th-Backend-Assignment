@@ -17,4 +17,9 @@ public class ResponseUtils {
                 .status(201)
                 .body(ApiResponse.created(data));
     }
+
+    // 204: 본문 없이 내려줘요 (ApiResponse로 감싸지 않음)
+    public ResponseEntity<Void> noContent() {
+        return ResponseEntity.noContent().build();
+    }
 }

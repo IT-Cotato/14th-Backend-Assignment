@@ -31,10 +31,14 @@ public class ErrorResponse {
     }
 
     public static ErrorResponse of(ErrorCode errorCode, HttpServletRequest request) {
+        return of(errorCode, errorCode.getMessage(), request);
+    }
+
+    public static ErrorResponse of(ErrorCode errorCode, String message, HttpServletRequest request) {
         return new ErrorResponse(
                 errorCode.getHttpStatus().value(),
                 errorCode.getCode(),
-                errorCode.getMessage(),
+                message,
                 request.getMethod(),
                 request.getRequestURI()
         );
