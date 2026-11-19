@@ -1,6 +1,13 @@
 {
   "permissions": {
-    "deny": ["Read(./.env)", "Read(./.env.*)", "Read(**/.env)", "Read(**/.env.*)"]
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.*.local)",
+      "Read(**/.env.development)",
+      "Read(**/.env.production)",
+      "Read(**/.env.test)"
+    ]
   },
   "hooks": {
     "PreToolUse": [
@@ -10,6 +17,15 @@
           {
             "type": "command",
             "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/.claude/hooks/protect-env.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python -X utf8 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-e2e.py\""
           }
         ]
       }
