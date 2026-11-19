@@ -1,6 +1,6 @@
 # ERD
 
-- ERDCloud: (링크)
+- ERDCloud: https://www.erdcloud.com/d/vtdkoCKh5wsAjTdmQ
 - 이미지: `erd.png`
 - DDL: `schema.sql` (ERDCloud에서 SQL import로 불러올 수 있다)
 
