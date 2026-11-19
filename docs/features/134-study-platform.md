@@ -100,6 +100,8 @@
 - 백엔드 단위 테스트(Mockito): `AuthServiceTest`, `StudyPostServiceTest`, `CommentServiceTest` + `contextLoads` → `./gradlew test` 25 passed
 - E2E(Playwright): `frontend/e2e/` 13개 시나리오 → `npx playwright test` 13 passed
 
+![E2E 결과](./images/134-e2e-result.png)
+
 | 기능 | 정상 | 에러 |
 |---|---|---|
 | 인증 | 가입(기수·파트) → 로그인 → 헤더 닉네임 → 마이페이지 → 로그아웃 | 중복 이메일, 기수 0, 틀린 비밀번호, 비로그인 마이페이지, 로그아웃 토큰 재사용 401 |
