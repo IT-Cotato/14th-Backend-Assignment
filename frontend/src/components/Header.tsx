@@ -22,7 +22,7 @@ export function Header() {
     <header className="border-b border-stone-200 bg-white">
       <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-2 px-4 py-3">
         <Link to="/" className="text-lg font-bold text-stone-900">
-          🥔 코테이토 스터디
+          코테이토 스터디
         </Link>
         <nav aria-label="주요 메뉴" className="flex flex-wrap items-center gap-1 sm:gap-2">
           <NavLink to="/studies" end className={navLinkClass}>
