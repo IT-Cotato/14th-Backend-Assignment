@@ -1,10 +1,10 @@
 # ERD
 
-- ERDCloud: (링크 추가 예정)
-- 이미지: `erd.png`
+- ERDCloud: https://www.erdcloud.com/d/fzsnp2T3R2djowcys
+- 이미지: [`cotato.png`](./cotato.png)
 - DDL: [`schema.sql`](./schema.sql) (엔티티에서 생성, ERDCloud 가져오기용)
 
-![ERD](./erd.png)
+![ERD](./cotato.png)
 
 ## 테이블
 
