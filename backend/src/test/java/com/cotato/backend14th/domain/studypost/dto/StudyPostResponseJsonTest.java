@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.cotato.backend14th.domain.comment.dto.CommentResponse;
 import com.cotato.backend14th.domain.studypost.entity.StudyStatus;
 import com.cotato.backend14th.domain.user.dto.AuthorResponse;
 import com.cotato.backend14th.domain.user.entity.Part;
@@ -36,5 +37,18 @@ class StudyPostResponseJsonTest {
         assertThat(json.get("createdAt").asText()).isEqualTo("2026-11-08T12:00:00");
         assertThat(json.get("updatedAt").asText()).isEqualTo("2026-11-08T12:00:00");
         assertThat(json.size()).isEqualTo(8);
+    }
+
+    @Test
+    @DisplayName("댓글 응답은 author와 isAuthor를 함께 내려준다")
+    void commentResponse() throws Exception {
+        CommentResponse response = new CommentResponse(5L, "신청합니다", author, false, createdAt);
+
+        JsonNode json = objectMapper.readTree(objectMapper.writeValueAsString(response));
+
+        assertThat(json.get("isAuthor").asBoolean()).isFalse();
+        assertThat(json.get("author").get("generation").asInt()).isEqualTo(14);
+        assertThat(json.get("createdAt").asText()).isEqualTo("2026-11-08T12:00:00");
+        assertThat(json.size()).isEqualTo(5);
     }
 }
