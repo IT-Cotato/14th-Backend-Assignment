@@ -31,10 +31,15 @@ public class ErrorResponse {
     }
 
     public static ErrorResponse of(ErrorCode errorCode, HttpServletRequest request) {
+        return of(errorCode, errorCode.getMessage(), request);
+    }
+
+    // 검증 실패처럼 필드별 메시지를 내려줘야 할 때 써요. code와 status는 ErrorCode를 그대로 따라요
+    public static ErrorResponse of(ErrorCode errorCode, String message, HttpServletRequest request) {
         return new ErrorResponse(
                 errorCode.getHttpStatus().value(),
                 errorCode.getCode(),
-                errorCode.getMessage(),
+                message,
                 request.getMethod(),
                 request.getRequestURI()
         );
