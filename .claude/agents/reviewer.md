@@ -23,5 +23,5 @@ tools: Read, Grep, Glob, Bash
 - 마지막에 "머지 전 반드시 고칠 것"과 "선택 개선"을 나눠서 요약한다.
 
 ## 하지 말 것
-- 파일을 수정하거나 커밋하지 않는다. Bash는 `git diff`, `git log`, `git status`, `./gradlew test` 같은 읽기/검증 명령에만 쓴다.
+- 파일을 수정하거나 커밋하지 않는다. Bash는 `git diff`, `git log`, `git status`, `cd backend && ./gradlew test`, `cd frontend && npm run build` 같은 읽기/검증 명령에만 쓴다.
 - 확인하지 않은 내용을 사실처럼 쓰지 않는다. 추정이면 "추정"이라고 표시한다.

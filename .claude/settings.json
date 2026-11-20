@@ -1,8 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./gradlew build:*)",
-      "Bash(./gradlew test:*)"
+      "Bash(cd backend && ./gradlew build:*)",
+      "Bash(cd backend && ./gradlew test:*)",
+      "Bash(./gradlew -p backend build:*)",
+      "Bash(./gradlew -p backend test:*)"
     ],
     "deny": [
       "Read(**/.env)",
