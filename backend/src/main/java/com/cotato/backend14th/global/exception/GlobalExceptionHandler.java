@@ -1,15 +1,19 @@
 // GlobalExceptionHandler.java
 package com.cotato.backend14th.global.exception;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.cotato.backend14th.global.common.response.ErrorResponse;
 
@@ -68,6 +72,32 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(ErrorCode.INVALID_INPUT.getHttpStatus())
                 .body(ErrorResponse.of(ErrorCode.INVALID_INPUT, request));
+    }
+
+    // 없는 주소로 요청하면 404로 처리해요. 처리하지 않으면 아래 Exception 처리기가 500으로 바꿔요
+    @ExceptionHandler({NoResourceFoundException.class, NoHandlerFoundException.class})
+    public ResponseEntity<ErrorResponse> handleNotFound(
+            Exception e, HttpServletRequest request
+    ) {
+        log.warn("[NotFound] {} {}", request.getMethod(), request.getRequestURI());
+
+        return ResponseEntity
+                .status(ErrorCode.RESOURCE_NOT_FOUND.getHttpStatus())
+                .body(ErrorResponse.of(ErrorCode.RESOURCE_NOT_FOUND, request));
+    }
+
+    // 주소는 있지만 그 HTTP 메서드를 지원하지 않으면 405로 처리하고, 쓸 수 있는 메서드를 Allow 헤더로 알려줘요
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotAllowed(
+            HttpRequestMethodNotSupportedException e, HttpServletRequest request
+    ) {
+        log.warn("[MethodNotAllowed] {} {}", request.getMethod(), request.getRequestURI());
+
+        ResponseEntity.BodyBuilder response = ResponseEntity.status(ErrorCode.METHOD_NOT_ALLOWED.getHttpStatus());
+        if (e.getSupportedHttpMethods() != null) {
+            response.allow(e.getSupportedHttpMethods().toArray(HttpMethod[]::new));
+        }
+        return response.body(ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED, request));
     }
 
     // 그 외 예상치 못한 모든 예외는 500으로 처리해요

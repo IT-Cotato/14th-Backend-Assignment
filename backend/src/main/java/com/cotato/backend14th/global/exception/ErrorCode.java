@@ -15,6 +15,8 @@ public enum ErrorCode {
     COMMON_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-002", "서버 내부 오류가 발생했습니다."),
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "COMMON-003", "입력값이 올바르지 않습니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON-004", "인증이 필요합니다."),
+    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON-005", "요청한 주소를 찾을 수 없습니다."),
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON-006", "지원하지 않는 HTTP 메서드입니다."),
 
     // USER
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER-001", "이미 가입된 이메일입니다."),
