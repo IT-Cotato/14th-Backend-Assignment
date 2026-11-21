@@ -1,7 +1,8 @@
 # ERD
 
-- ERDCloud 링크: (ERDCloud 에서 그린 뒤 여기에 링크를 적는다)
-- 이미지: `docs/erd/erd.png` (ERDCloud 에서 내보낸 png 를 이 이름으로 저장한다)
+- ERDCloud 링크: https://www.erdcloud.com/d/vjrEfYQAFpsLXAwRE
+
+![ERD](erd.png)
 
 아래 표는 실제 엔티티(`backend/src/main/java/com/cotato/backend14th/domain/**/entity/`)와 같다. 테이블이 바뀌면 이 문서와 ERD 를 같이 고친다.
 
@@ -49,6 +50,8 @@ logout_token    (다른 테이블과 관계 없음)
 
 댓글이 곧 스터디 신청이다.
 
+- 한 사용자가 같은 모집글에 댓글을 여러 개 남길 수 있다 (의도한 것). 명세가 별도의 신청 기능 없이 댓글을 신청으로 보므로, 질문과 추가 대화도 댓글로 할 수 있게 `(study_post_id, user_id)` 에 UNIQUE 를 걸지 않았다.
+
 | 컬럼 | 타입 | 제약 | 설명 |
 | --- | --- | --- | --- |
 | `id` | BIGINT | PK, AUTO_INCREMENT | |
@@ -69,3 +72,5 @@ logout_token    (다른 테이블과 관계 없음)
 | `expires_at` | DATETIME(6) | NOT NULL | 토큰의 만료 시각 |
 | `created_at` | DATETIME(6) | | 로그아웃한 시각 |
 | `updated_at` | DATETIME(6) | | 수정 시각 |
+
+- 만료 시각이 지난 행은 지금 정리하지 않는다. 만료된 토큰은 JWT 검증에서 이미 거부되어 남아 있어도 동작에 영향이 없고, 과제 규모에서는 쌓이는 양이 적기 때문이다. 필요해지면 스케줄러(`@Scheduled`)로 `expires_at` 이 지난 행을 주기적으로 삭제하거나 Redis TTL 로 옮긴다.
