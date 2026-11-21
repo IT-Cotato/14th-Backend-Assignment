@@ -5,6 +5,8 @@
 ### 응답
 - 컨트롤러는 `ResponseEntity<ApiResponse<T>>`를 반환한다.
 - 조회/수정은 `ResponseUtils.ok(dto)`, 생성은 `ResponseUtils.created(dto)`를 쓴다.
+- 본문이 없는 204(삭제, 로그아웃)는 `ResponseUtils.noContent()`를 쓰고 `ApiResponse`로 감싸지 않는다. 반환 타입은 `ResponseEntity<Void>`.
+- 목록은 `PageResponse.of(page, content)`로 `content`, `page`, `size`, `totalElements`, `totalPages`를 내려준다.
 - `ApiResponse`를 직접 `new` 하지 않는다. (생성자가 private)
 
 ### 예외
@@ -14,8 +16,8 @@
 
 ### ErrorCode
 - 형식: `<DOMAIN>_<상황>(HttpStatus.X, "<DOMAIN>-<3자리 번호>", "<한글 메시지>")`
-- 예: `BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOK-001", "책을 찾을 수 없습니다.")`
-- 도메인별로 `// BOOK` 같은 주석 그룹을 만들고, 번호는 그룹 안에서 001부터 이어 붙인다.
+- 예: `STUDY_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY-001", "존재하지 않는 스터디 모집글입니다.")`
+- 도메인별로 `// STUDY` 같은 주석 그룹을 만들고, 번호는 그룹 안에서 001부터 이어 붙인다.
 - 메시지는 `~입니다.`로 끝나는 문장으로 쓴다.
 
 ### 엔티티
