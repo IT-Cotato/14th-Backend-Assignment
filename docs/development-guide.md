@@ -6,9 +6,9 @@
 
 | 항목 | 기술 |
 |---|---|
-| 언어 | Java 21 |
-| 프레임워크 | Spring Boot 4.1.1 |
-| 빌드 도구 | Gradle Wrapper |
+| 언어 | Java 17 |
+| 프레임워크 | Spring Boot 3.5.16 |
+| 빌드 도구 | Gradle Wrapper 8.14.5 |
 | 데이터베이스 | MySQL |
 | ORM | Spring Data JPA |
 | 보안 | Spring Security |
@@ -16,7 +16,7 @@
 
 ## 2. 프로젝트 빌드
 
-프로젝트 루트 디렉터리에서 다음 명령어를 실행한다.
+`backend/` 디렉터리에서 다음 명령어를 실행한다.
 
 ```bash
 ./gradlew build

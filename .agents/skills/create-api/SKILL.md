@@ -16,14 +16,19 @@ description: Spring Boot 백엔드에서 새로운 REST API를 구현할 때 사
    - `docs/architecture.md`를 읽는다.
    - `backend/`의 기존 도메인 Controller, DTO, Entity, Repository를 확인한다.
 
-2. API 규칙을 확인한다.
+2. API 명세와 규칙을 확인한다.
+   - `docs/api-spec.md`에서 구현할 API의 HTTP Method, 엔드포인트, 요청 및 응답 형식을 확인한다.
    - `docs/api-conventions.md`를 읽는다.
-   - 기존 API의 응답 형식과 예외 처리 방식을 파악한다.
+   - 기존 API의 공통 응답 형식과 예외 처리 방식을 파악한다.
+   - 명세에 없는 API나 기능을 임의로 추가하지 않는다.
+   - 명세와 기존 코드가 충돌하면 임의로 결정하지 않고 사용자에게 확인한다.
 
-3. API를 설계한다.
-   - HTTP Method와 엔드포인트를 정의한다.
-   - 요청 및 응답 DTO를 설계한다.
-   - 정상 응답과 예외 상황을 정의한다.
+3. API 구현 계획을 수립한다.
+   - `docs/api-spec.md`에 정의된 요구사항을 기준으로 구현 범위를 확인한다.
+   - 필요한 Entity, Repository, DTO, Service, Controller를 식별한다.
+   - 인증 및 작성자 권한 검사를 확인한다.
+   - 정상 응답과 예외 상황을 정리한다.
+   - 기존 구현을 재사용할 수 있는지 확인한다.
 
 4. API를 구현한다.
    - 기존 패키지 구조를 따른다.

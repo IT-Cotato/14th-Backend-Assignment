@@ -4,7 +4,7 @@
 
 - COTATO 14기 스터디 매칭 플랫폼 개발을 위한 풀스택 모노레포 프로젝트이다.
 - 프론트엔드는 React, TypeScript, Vite를 사용한다.
-- 백엔드는 Java 21, Spring Boot 4.1.1, Gradle을 사용한다.
+- 백엔드는 Java 17, Spring Boot 3.5.16, Gradle Wrapper 8.14.5을 사용한다.
 - 백엔드는 MySQL, Spring Data JPA, Spring Security를 사용한다.
 - 백엔드 베이스 패키지는 `com.cotato.backend14th`이다.
 - 기존 백엔드에는 공통 응답 형식, CORS, Security, BaseEntity, Swagger 관련 코드가 구현되어 있다.
