@@ -1,6 +1,6 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, Navigate, Outlet, Route, Routes, useNavigate } from 'react-router'
-import { logout } from './api/auth'
+import { getProfile, logout, type Profile } from './api/auth'
 import { ApiError, errorMessage } from './api/client'
 import AuthForm from './pages/AuthForm'
 import ProfilePage from './pages/ProfilePage'
@@ -11,8 +11,11 @@ import './App.css'
 
 const tokenKey = 'cotato.accessToken'
 
-function Layout({ signedIn, pending, error, onLogout }: {
+type ProfileResult = { profile: Profile } | { error: string }
+
+function Layout({ signedIn, nickname, pending, error, onLogout }: {
   signedIn: boolean
+  nickname?: string
   pending: boolean
   error: string
   onLogout: () => void
@@ -26,6 +29,7 @@ function Layout({ signedIn, pending, error, onLogout }: {
             <Link to="/study-posts">모집글</Link>
             {signedIn ? (
               <>
+                {nickname && <span>{nickname}</span>}
                 <Link to="/me">내 정보</Link>
                 <button type="button" disabled={pending} onClick={onLogout}>
                   {pending ? '로그아웃 중…' : '로그아웃'}
@@ -52,6 +56,9 @@ export default function App() {
   const [notice, setNotice] = useState('')
   const [logoutPending, setLogoutPending] = useState(false)
   const [logoutError, setLogoutError] = useState('')
+  const [profileRequest, setProfileRequest] = useState<{ token: string; result: ProfileResult } | null>(null)
+  const [attempt, setAttempt] = useState(0)
+  const profileResult = profileRequest?.token === token ? profileRequest?.result : null
 
   function startSession(value: string) {
     sessionStorage.setItem(tokenKey, value)
@@ -73,6 +80,24 @@ export default function App() {
   const handleUnauthorized = useCallback((value: string) => {
     endSession(value, '로그인 세션이 만료되었습니다. 다시 로그인해 주세요.')
   }, [endSession])
+
+  useEffect(() => {
+    if (!token) return
+    const controller = new AbortController()
+    getProfile(token, controller.signal).then((profile) => {
+      if (!controller.signal.aborted) setProfileRequest({ token, result: { profile } })
+    }).catch((error: unknown) => {
+      if (controller.signal.aborted) return
+      if (error instanceof ApiError && error.status === 401) handleUnauthorized(token)
+      else setProfileRequest({ token, result: { error: errorMessage(error) } })
+    })
+    return () => controller.abort()
+  }, [token, attempt, handleUnauthorized])
+
+  function retryProfile() {
+    setProfileRequest(null)
+    setAttempt((value) => value + 1)
+  }
 
   function handleWriteUnauthorized(value: string) {
     if (activeToken.current !== value) return
@@ -102,7 +127,7 @@ export default function App() {
 
   return (
     <Routes>
-      <Route element={<Layout signedIn={Boolean(token)} pending={logoutPending} error={logoutError} onLogout={handleLogout} />}>
+      <Route element={<Layout signedIn={Boolean(token)} nickname={profileResult && 'profile' in profileResult ? profileResult.profile.nickname : undefined} pending={logoutPending} error={logoutError} onLogout={handleLogout} />}>
         <Route index element={<Navigate replace to="/study-posts" />} />
         <Route path="study-posts" element={<StudyPostListPage signedIn={Boolean(token)} />} />
         <Route path="study-posts/:postId" element={<StudyPostDetailPage token={token} onUnauthorized={handleWriteUnauthorized} />} />
@@ -116,7 +141,7 @@ export default function App() {
           <AuthForm key="login" mode="login" onLogin={startSession} notice={notice} />} />
         <Route path="signup" element={token ? <Navigate replace to="/me" /> :
           <AuthForm key="signup" mode="signup" onLogin={startSession} />} />
-        <Route path="me" element={token ? <ProfilePage key={token} token={token} onUnauthorized={handleUnauthorized} /> :
+        <Route path="me" element={token ? <ProfilePage result={profileResult ?? null} onRetry={retryProfile} /> :
           <Navigate replace to="/login" />} />
         <Route path="*" element={<section className="panel"><h1>페이지를 찾을 수 없습니다</h1>
           <Link to="/">첫 화면으로 이동</Link></section>} />

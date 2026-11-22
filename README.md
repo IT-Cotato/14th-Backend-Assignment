@@ -71,7 +71,7 @@ npm ci
 npm run dev
 ```
 
-터미널에 표시된 Vite 주소를 브라우저에서 엽니다. 기본 개발 주소는 `http://localhost:5173`이며, Vite는 `/api` 요청을 `http://127.0.0.1:8080`으로 프록시합니다. 이 구성에서 프론트엔드 환경변수는 필요하지 않습니다. 별도 API 서버를 직접 호출할 때는 `VITE_API_BASE_URL`에 `/api` 앞부분의 서버 주소를 지정합니다.
+터미널에 표시된 Vite 주소를 브라우저에서 엽니다. 기본 개발 주소는 `http://localhost:3000`이며, Vite는 `/api` 요청을 `http://127.0.0.1:8080`으로 프록시합니다. 이 구성에서 프론트엔드 환경변수는 필요하지 않습니다. 별도 API 서버를 직접 호출할 때는 `VITE_API_BASE_URL`에 `/api` 앞부분의 서버 주소를 지정합니다.
 
 ## API와 설계 문서
 
@@ -90,3 +90,19 @@ npm run dev
 ```
 
 백엔드 통합 테스트는 H2와 테스트용 JWT 키를 사용합니다. MySQL과 브라우저를 함께 확인하려면 개발용 MySQL에 연결한 백엔드와 Vite를 실행한 뒤, 테스트 계정으로 회원가입·로그인·모집글·댓글·로그아웃 흐름을 확인합니다.
+
+
+## Playwright E2E
+
+Java 17, Node.js·npm, Python 3, MySQL 서버와 클라이언트(`mysqld`, `mysql`)가 필요합니다. `mysqld --initialize-insecure`를 지원하는 MySQL을 사용하고, 실행 전에 로컬 포트 3000과 8080을 비워 둡니다.
+
+```sh
+cd frontend
+npm ci
+npx playwright install chromium
+npm run test:e2e
+```
+
+실행 스크립트가 새 임시 MySQL 데이터 디렉터리와 E2E 전용 데이터베이스를 만들고 Spring Boot를 8080에서 실행합니다. Playwright는 Chromium과 Vite(3000)를 시작하며, 기존 `/api` 프록시를 통해 실제 API를 호출합니다. 각 테스트는 별도 브라우저 세션과 고유 테스트 데이터를 사용합니다. 실행 종료 시 임시 서버와 DB를 정리합니다. 기존 `backend/.env`와 공유 DB는 이 실행에서 사용하지 않습니다.
+
+한 파일만 실행하려면 `npm run test:e2e -- e2e/auth.spec.ts`처럼 지정합니다. 실패한 테스트의 스크린샷과 트레이스는 `frontend/test-results/`에 저장되고, HTML 보고서는 `frontend/playwright-report/`에 생성됩니다. `frontend/`에서 `npx playwright show-report`로 보고서를 확인할 수 있습니다.
