@@ -118,3 +118,16 @@ export interface StudyPostUpdateRequest {
 export interface StudyPostIdResponse {
   postId: number
 }
+
+// 모집글 댓글 = 스터디 신청
+export interface Comment {
+  commentId: number
+  content: string
+  author: Author
+  isAuthor: boolean
+  createdAt: string
+}
+
+export interface CommentIdResponse {
+  commentId: number
+}
