@@ -2,7 +2,7 @@
 
 ## 기술 스택
 
-- Java 21, Spring Boot 4.1.1, Gradle
+- Java 17, Spring Boot 3.5.16, Gradle Wrapper 8.14.5
 - Spring Data JPA, Spring Security, MySQL
 - 베이스 패키지: `com.cotato.backend14th`
 
