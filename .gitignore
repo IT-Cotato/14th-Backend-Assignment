@@ -40,3 +40,9 @@ out/
 .env
 
 .DS_Store
+
+# Frontend
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
