@@ -226,6 +226,7 @@ function StudyPostItem({ post }: { post: StudyPostSummary }) {
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
         <AuthorInfo author={post.author} />
         <span className="text-sm text-slate-400">{formatDate(post.createdAt)}</span>
+        <span className="text-sm text-slate-500">댓글 {post.commentCount}</span>
       </div>
     </li>
   )

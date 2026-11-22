@@ -4,6 +4,7 @@ import { getErrorMessage } from '../api/error'
 import { deleteStudyPost, getStudyPost, updateStudyPost } from '../api/studyPosts'
 import type { StudyPostDetail } from '../api/types'
 import { AuthorInfo } from '../components/AuthorInfo'
+import { CommentSection } from '../components/comments/CommentSection'
 import { ErrorAlert } from '../components/ErrorAlert'
 import { Loading } from '../components/Loading'
 import { StatusBadge } from '../components/StatusBadge'
@@ -137,13 +138,8 @@ export function StudyDetailPage() {
         )}
       </div>
 
-      {/* 다음 단계에서 댓글(= 스터디 신청) 목록과 작성 폼이 들어갈 자리예요 */}
-      <section aria-labelledby="comments-heading" className="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-        <h2 id="comments-heading" className="text-lg font-bold text-slate-900">
-          댓글
-        </h2>
-        <p className="mt-2 text-sm text-slate-500">댓글 기능은 곧 추가돼요.</p>
-      </section>
+      {/* 댓글 = 스터디 신청 */}
+      <CommentSection postId={post.postId} studyStatus={post.studyStatus} />
 
       <div className="mt-6">
         <Link to="/studies" className="text-sm font-medium text-indigo-600 hover:underline">

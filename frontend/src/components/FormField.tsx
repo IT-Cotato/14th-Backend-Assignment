@@ -106,9 +106,18 @@ interface TextAreaFieldProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaEle
   label: string
   error?: string
   maxCount?: number
+  // className으로 min-h를 덧붙이면 기본값과 충돌해서(어느 쪽이 이길지 CSS 순서에 달림) 따로 받아요
+  minHeightClass?: string
 }
 
-export function TextAreaField({ label, error, maxCount, className, ...textareaProps }: TextAreaFieldProps) {
+export function TextAreaField({
+  label,
+  error,
+  maxCount,
+  minHeightClass = 'min-h-48',
+  className,
+  ...textareaProps
+}: TextAreaFieldProps) {
   const count = maxCount ? { current: String(textareaProps.value ?? '').length, max: maxCount } : undefined
   return (
     <FieldShell label={label} error={error} count={count}>
@@ -117,7 +126,7 @@ export function TextAreaField({ label, error, maxCount, className, ...textareaPr
           id={inputId}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
-          className={`${controlClass} ${controlStateClass(Boolean(error))} min-h-48 resize-y ${className ?? ''}`}
+          className={`${controlClass} ${controlStateClass(Boolean(error))} ${minHeightClass} resize-y ${className ?? ''}`}
           {...textareaProps}
         />
       )}
