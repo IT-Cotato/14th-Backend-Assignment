@@ -6,7 +6,9 @@ import { LoginPage } from './pages/LoginPage'
 import { MyPage } from './pages/MyPage'
 import { SignupPage } from './pages/SignupPage'
 import { StudiesPage } from './pages/StudiesPage'
+import { StudyCreatePage } from './pages/StudyCreatePage'
 import { StudyDetailPage } from './pages/StudyDetailPage'
+import { StudyEditPage } from './pages/StudyEditPage'
 
 function App() {
   return (
@@ -23,6 +25,9 @@ function App() {
 
         <Route element={<RequireAuth />}>
           <Route path="/mypage" element={<MyPage />} />
+          {/* 고정 경로 new가 :id보다 먼저 맞춰져서 /studies/new가 상세로 가지 않아요 */}
+          <Route path="/studies/new" element={<StudyCreatePage />} />
+          <Route path="/studies/:id/edit" element={<StudyEditPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/studies" replace />} />
