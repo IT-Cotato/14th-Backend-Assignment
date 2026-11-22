@@ -58,3 +58,63 @@ export interface LoginResponse {
   accessToken: string
   tokenType: string
 }
+
+// 목록 API 공통 페이지 응답 (api-spec "페이지 응답")
+export interface PageResponse<T> {
+  content: T[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export const STUDY_STATUSES = ['RECRUITING', 'CLOSED'] as const
+export type StudyStatus = (typeof STUDY_STATUSES)[number]
+
+export const STUDY_STATUS_LABELS: Record<StudyStatus, string> = {
+  RECRUITING: '모집 중',
+  CLOSED: '마감',
+}
+
+// 모집글·댓글의 작성자 정보 (api-spec "작성자 정보")
+export interface Author {
+  nickname: string
+  generation: number
+  part: Part
+}
+
+export interface StudyPostSummary {
+  postId: number
+  title: string
+  studyStatus: StudyStatus
+  author: Author
+  commentCount: number
+  createdAt: string
+}
+
+export interface StudyPostDetail {
+  postId: number
+  title: string
+  content: string
+  studyStatus: StudyStatus
+  author: Author
+  isAuthor: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StudyPostCreateRequest {
+  title: string
+  content: string
+}
+
+// 바꿀 필드만 보내요
+export interface StudyPostUpdateRequest {
+  title?: string
+  content?: string
+  studyStatus?: StudyStatus
+}
+
+export interface StudyPostIdResponse {
+  postId: number
+}
