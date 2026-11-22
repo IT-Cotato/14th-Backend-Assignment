@@ -1,4 +1,10 @@
-import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from 'react'
+import {
+  useId,
+  type InputHTMLAttributes,
+  type ReactNode,
+  type SelectHTMLAttributes,
+  type TextareaHTMLAttributes,
+} from 'react'
 
 const controlClass =
   'block w-full rounded-md border bg-white px-3 py-2 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2'
@@ -12,11 +18,13 @@ function controlStateClass(hasError: boolean) {
 interface FieldShellProps {
   label: string
   error?: string
+  // 글자 수 표시 (예: 12 / 50). 넘으면 빨갛게 보여줘요
+  count?: { current: number; max: number }
   children: (ids: { inputId: string; errorId: string }) => ReactNode
 }
 
 // label과 입력창을 htmlFor/id로 연결하고, 에러 메시지는 aria-describedby로 연결해요 (getByLabel로 찾을 수 있게)
-function FieldShell({ label, error, children }: FieldShellProps) {
+function FieldShell({ label, error, count, children }: FieldShellProps) {
   const inputId = useId()
   const errorId = useId()
   return (
@@ -25,10 +33,23 @@ function FieldShell({ label, error, children }: FieldShellProps) {
         {label}
       </label>
       {children({ inputId, errorId })}
-      {error && (
-        <p id={errorId} className="text-sm text-red-600">
-          {error}
-        </p>
+      {(error || count) && (
+        <div className="flex items-start justify-between gap-2">
+          {error ? (
+            <p id={errorId} className="text-sm text-red-600">
+              {error}
+            </p>
+          ) : (
+            <span />
+          )}
+          {count && (
+            <span
+              className={`shrink-0 text-xs ${count.current > count.max ? 'text-red-600' : 'text-slate-400'}`}
+            >
+              {count.current} / {count.max}
+            </span>
+          )}
+        </div>
       )}
     </div>
   )
@@ -37,11 +58,13 @@ function FieldShell({ label, error, children }: FieldShellProps) {
 interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id'> {
   label: string
   error?: string
+  maxCount?: number
 }
 
-export function TextField({ label, error, className, ...inputProps }: TextFieldProps) {
+export function TextField({ label, error, maxCount, className, ...inputProps }: TextFieldProps) {
+  const count = maxCount ? { current: String(inputProps.value ?? '').length, max: maxCount } : undefined
   return (
-    <FieldShell label={label} error={error}>
+    <FieldShell label={label} error={error} count={count}>
       {({ inputId, errorId }) => (
         <input
           id={inputId}
@@ -74,6 +97,29 @@ export function SelectField({ label, error, className, children, ...selectProps 
         >
           {children}
         </select>
+      )}
+    </FieldShell>
+  )
+}
+
+interface TextAreaFieldProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'id'> {
+  label: string
+  error?: string
+  maxCount?: number
+}
+
+export function TextAreaField({ label, error, maxCount, className, ...textareaProps }: TextAreaFieldProps) {
+  const count = maxCount ? { current: String(textareaProps.value ?? '').length, max: maxCount } : undefined
+  return (
+    <FieldShell label={label} error={error} count={count}>
+      {({ inputId, errorId }) => (
+        <textarea
+          id={inputId}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
+          className={`${controlClass} ${controlStateClass(Boolean(error))} min-h-48 resize-y ${className ?? ''}`}
+          {...textareaProps}
+        />
       )}
     </FieldShell>
   )
