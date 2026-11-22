@@ -1,11 +1,31 @@
+import { Navigate, Route, Routes } from 'react-router-dom'
+import { GuestOnly } from './auth/GuestOnly'
+import { RequireAuth } from './auth/RequireAuth'
+import { Layout } from './components/Layout'
+import { LoginPage } from './pages/LoginPage'
+import { MyPage } from './pages/MyPage'
+import { SignupPage } from './pages/SignupPage'
+import { StudiesPage } from './pages/StudiesPage'
+
 function App() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
-      <div className="rounded-xl bg-white p-8 text-center shadow">
-        <h1 className="text-2xl font-bold text-indigo-600">코테이토 스터디 매칭</h1>
-        <p className="mt-2 text-slate-500">Tailwind CSS가 적용되면 이 글자가 회색이고, 제목은 보라색이에요.</p>
-      </div>
-    </main>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route index element={<Navigate to="/studies" replace />} />
+        <Route path="/studies" element={<StudiesPage />} />
+
+        <Route element={<GuestOnly />}>
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
+
+        <Route element={<RequireAuth />}>
+          <Route path="/mypage" element={<MyPage />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/studies" replace />} />
+      </Route>
+    </Routes>
   )
 }
 
