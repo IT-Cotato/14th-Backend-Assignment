@@ -34,10 +34,6 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-001", "존재하지 않는 댓글이에요."),
     NOT_COMMENT_AUTHOR(HttpStatus.FORBIDDEN, "COMMENT-002", "댓글 작성자가 아니에요.");
 
-    // 나중에 도메인이 늘어나면 이렇게 그룹을 추가하면 돼요
-    // APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT-001", "지원자를 찾을 수 없습니다."),
-    // DOCUMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "DOCUMENT-001", "서류를 찾을 수 없습니다."),
-
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
