@@ -23,7 +23,11 @@ public enum ErrorCode {
 
     // USER
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER-001", "이미 가입된 이메일이에요."),
-    INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "USER-002", "이메일 또는 비밀번호가 틀려요.");
+    INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "USER-002", "이메일 또는 비밀번호가 틀려요."),
+
+    // STUDY
+    STUDY_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY-001", "존재하지 않는 스터디 모집글이에요."),
+    NOT_POST_AUTHOR(HttpStatus.FORBIDDEN, "STUDY-002", "모집글 작성자가 아니에요.");
 
     // 나중에 도메인이 늘어나면 이렇게 그룹을 추가하면 돼요
     // APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT-001", "지원자를 찾을 수 없습니다."),
