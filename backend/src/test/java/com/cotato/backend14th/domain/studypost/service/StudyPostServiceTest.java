@@ -3,12 +3,15 @@ package com.cotato.backend14th.domain.studypost.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +21,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,6 +30,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.cotato.backend14th.domain.comment.repository.StudyPostCommentRepository;
+import com.cotato.backend14th.domain.comment.repository.StudyPostCommentRepository.CommentCount;
 import com.cotato.backend14th.domain.studypost.dto.StudyPostCreateRequest;
 import com.cotato.backend14th.domain.studypost.dto.StudyPostDetailResponse;
 import com.cotato.backend14th.domain.studypost.dto.StudyPostIdResponse;
@@ -48,6 +54,8 @@ class StudyPostServiceTest {
     private StudyPostRepository studyPostRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private StudyPostCommentRepository commentRepository;
 
     @InjectMocks
     private StudyPostService studyPostService;
@@ -78,6 +86,20 @@ class StudyPostServiceTest {
                 .build();
         ReflectionTestUtils.setField(post, "id", id);
         return post;
+    }
+
+    private static CommentCount commentCount(Long postId, Long count) {
+        return new CommentCount() {
+            @Override
+            public Long getPostId() {
+                return postId;
+            }
+
+            @Override
+            public Long getCount() {
+                return count;
+            }
+        };
     }
 
     private static void assertErrorCode(Throwable thrown, ErrorCode expected) {
@@ -168,6 +190,26 @@ class StudyPostServiceTest {
             assertThat(response.getContent()).isEmpty();
             assertThat(response.getTotalElements()).isZero();
             verify(studyPostRepository).search(isNull(), isNull(), isNull(), eq(PageRequest.of(0, 10)));
+            // 글이 없으면 댓글 수 집계 쿼리도 부르지 않아요
+            verifyNoInteractions(commentRepository);
+        }
+
+        @Test
+        @DisplayName("한 페이지 글들의 댓글 수를 한 번에 세서 채우고, 댓글이 없는 글은 0이에요")
+        void fillsCommentCounts() {
+            User author = user(AUTHOR_ID, "길동이", Part.BE);
+            Pageable pageable = PageRequest.of(0, 10);
+            given(studyPostRepository.search(isNull(), isNull(), isNull(), eq(pageable)))
+                    .willReturn(new PageImpl<>(List.of(post(11L, author), post(12L, author)), pageable, 2));
+            given(commentRepository.countByStudyPostIds(List.of(11L, 12L)))
+                    .willReturn(List.of(commentCount(11L, 3L)));
+
+            PageResponse<StudyPostSummaryResponse> response = studyPostService.getList(null, null, null, 0, 10);
+
+            assertThat(response.getContent())
+                    .extracting(StudyPostSummaryResponse::getPostId, StudyPostSummaryResponse::getCommentCount)
+                    .containsExactly(tuple(11L, 3L), tuple(12L, 0L));
+            verify(commentRepository).countByStudyPostIds(List.of(11L, 12L));
         }
     }
 
@@ -280,14 +322,17 @@ class StudyPostServiceTest {
     class Delete {
 
         @Test
-        @DisplayName("작성자면 글을 삭제해요")
+        @DisplayName("작성자면 달린 댓글을 먼저 일괄 삭제한 뒤 글을 삭제해요")
         void success() {
             StudyPost post = post(POST_ID, user(AUTHOR_ID, "길동이", Part.BE));
             given(studyPostRepository.findWithUserById(POST_ID)).willReturn(Optional.of(post));
 
             studyPostService.delete(POST_ID, AUTHOR_ID);
 
-            verify(studyPostRepository).delete(post);
+            // 댓글이 글을 FK로 참조해서 순서가 중요해요
+            InOrder order = inOrder(commentRepository, studyPostRepository);
+            order.verify(commentRepository).deleteAllByStudyPostId(POST_ID);
+            order.verify(studyPostRepository).delete(post);
         }
 
         @Test
@@ -299,6 +344,7 @@ class StudyPostServiceTest {
             assertThatThrownBy(() -> studyPostService.delete(POST_ID, OTHER_ID))
                     .satisfies(thrown -> assertErrorCode(thrown, ErrorCode.NOT_POST_AUTHOR));
             verify(studyPostRepository, never()).delete(any());
+            verify(commentRepository, never()).deleteAllByStudyPostId(any());
         }
 
         @Test
@@ -309,6 +355,7 @@ class StudyPostServiceTest {
             assertThatThrownBy(() -> studyPostService.delete(POST_ID, AUTHOR_ID))
                     .satisfies(thrown -> assertErrorCode(thrown, ErrorCode.STUDY_POST_NOT_FOUND));
             verify(studyPostRepository, never()).delete(any());
+            verify(commentRepository, never()).deleteAllByStudyPostId(any());
         }
     }
 }
