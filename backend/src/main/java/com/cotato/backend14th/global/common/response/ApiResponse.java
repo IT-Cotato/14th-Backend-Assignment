@@ -2,6 +2,7 @@
 package com.cotato.backend14th.global.common.response;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.springframework.http.HttpStatus;
 
@@ -14,12 +15,14 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_NULL) // data가 null이면 응답에서 아예 필드를 빼줘요
 public class ApiResponse<T> {
 
+    private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
+
     private final boolean success;
     private final int status;
     private final T data;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private final LocalDateTime timestamp = LocalDateTime.now();
+    private final LocalDateTime timestamp = LocalDateTime.now(SEOUL);
 
     private ApiResponse(boolean success, int status, T data) {
         this.success = success;

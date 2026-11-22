@@ -1,6 +1,7 @@
 package com.cotato.backend14th.domain.user.dto;
 
 import com.cotato.backend14th.domain.user.entity.Part;
+import com.cotato.backend14th.global.common.request.TextDeserializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -16,11 +17,11 @@ import jakarta.validation.constraints.Size;
 import java.io.IOException;
 
 public record SignupRequest(
-        @NotBlank @Email @Size(max = 255) String email,
+        @JsonDeserialize(using = TextDeserializer.class) @NotBlank @Email @Size(max = 255) String email,
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        @NotNull @Size(min = 8) String password,
-        @NotBlank @Size(max = 100) String name,
-        @NotBlank @Size(min = 2, max = 10) String nickname,
+        @JsonDeserialize(using = TextDeserializer.class) @NotNull @Size(min = 8) String password,
+        @JsonDeserialize(using = TextDeserializer.class) @NotBlank @Size(max = 100) String name,
+        @JsonDeserialize(using = TextDeserializer.class) @NotBlank @Size(min = 2, max = 10) String nickname,
         @JsonDeserialize(using = GenerationDeserializer.class) @NotNull @Positive Integer generation,
         @JsonDeserialize(using = PartDeserializer.class) @NotNull Part part
 ) {

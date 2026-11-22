@@ -51,6 +51,12 @@ public class SecurityConfig {
         return http
                 .securityMatcher(new OrRequestMatcher(
                         paths.matcher(HttpMethod.POST, "/api/auth/logout"),
+                        paths.matcher(HttpMethod.POST, "/api/study-posts"),
+                        paths.matcher(HttpMethod.POST, "/api/study-posts/{postId}/comments"),
+                        paths.matcher(HttpMethod.PATCH, "/api/study-posts/{postId}"),
+                        paths.matcher(HttpMethod.PATCH, "/api/comments/{commentId}"),
+                        paths.matcher(HttpMethod.DELETE, "/api/comments/{commentId}"),
+                        paths.matcher(HttpMethod.DELETE, "/api/study-posts/{postId}"),
                         paths.matcher(HttpMethod.GET, "/api/users/me"),
                         paths.matcher(HttpMethod.HEAD, "/api/users/me")))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))

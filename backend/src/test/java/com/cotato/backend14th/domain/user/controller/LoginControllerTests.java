@@ -5,14 +5,18 @@ import com.cotato.backend14th.domain.user.entity.Part;
 import com.cotato.backend14th.domain.user.entity.User;
 import com.cotato.backend14th.domain.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -93,6 +97,20 @@ class LoginControllerTests {
     @Test
     void rejectsWrongPassword() throws Exception {
         expectInvalidCredentials(login(EMAIL, "wrong-password"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"123456789", "true", "{}", "[]"})
+    void rejectsNonStringCredentialsDuringDeserialization(String jsonValue) throws Exception {
+        for (String field : new String[]{"email", "password"}) {
+            ObjectNode request = objectMapper.createObjectNode().put("email", EMAIL).put("password", PASSWORD);
+            request.set(field, objectMapper.readTree(jsonValue));
+            ResultActions response = mockMvc.perform(post(LOGIN_PATH)
+                    .contentType(MediaType.APPLICATION_JSON).content(request.toString()));
+            expectInvalidCredentials(response);
+            response.andExpect(result -> assertThat(result.getResolvedException())
+                    .isInstanceOf(HttpMessageNotReadableException.class));
+        }
     }
 
     private ResultActions login(String email, String password) throws Exception {

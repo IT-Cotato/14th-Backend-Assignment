@@ -9,10 +9,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
@@ -94,6 +96,21 @@ class SignupControllerTests {
         ObjectNode request = validRequest("invalid@example.com");
         request.set(field, objectMapper.readTree(jsonValue));
         expectInvalidInput(request.toString());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"123456789", "true", "{}", "[]"})
+    void rejectsNonStringJsonForTextFields(String jsonValue) throws Exception {
+        for (String field : new String[]{"email", "password", "name", "nickname"}) {
+            ObjectNode request = validRequest("invalid@example.com");
+            request.set(field, objectMapper.readTree(jsonValue));
+            signup(request.toString())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.code").value("COMMON-003"))
+                    .andExpect(result -> assertThat(result.getResolvedException())
+                            .isInstanceOf(HttpMessageNotReadableException.class));
+        }
+        assertThat(userRepository.existsByEmail("invalid@example.com")).isFalse();
     }
 
     @Test
