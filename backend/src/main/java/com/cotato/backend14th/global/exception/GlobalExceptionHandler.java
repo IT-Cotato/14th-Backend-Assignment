@@ -5,8 +5,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.cotato.backend14th.global.common.response.ErrorResponse;
@@ -59,6 +63,50 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(ErrorCode.INVALID_INPUT.getHttpStatus())
                 .body(ErrorResponse.of(ErrorCode.INVALID_INPUT, request));
+    }
+
+    // ?status=FOO, ?part=XX, /api/study-posts/abc처럼 쿼리·경로 값의 타입 변환에 실패한 경우
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException e, HttpServletRequest request
+    ) {
+        log.warn("[TypeMismatch] {} {} | {}={}",
+                request.getMethod(), request.getRequestURI(), e.getName(), e.getValue());
+        return toResponse(ErrorCode.INVALID_INPUT, request);
+    }
+
+    // @RequestParam에 붙인 @Min, @Max 같은 검증에 실패한 경우 (예: size=0)
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> handleHandlerMethodValidationException(
+            HandlerMethodValidationException e, HttpServletRequest request
+    ) {
+        log.warn("[HandlerMethodValidation] {} {} | {}",
+                request.getMethod(), request.getRequestURI(), e.getMessage());
+        return toResponse(ErrorCode.INVALID_INPUT, request);
+    }
+
+    // 없는 URL. catch-all 핸들러가 500으로 바꾸지 않도록 따로 잡아요
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(
+            NoResourceFoundException e, HttpServletRequest request
+    ) {
+        log.warn("[NoResourceFound] {} {}", request.getMethod(), request.getRequestURI());
+        return toResponse(ErrorCode.COMMON_NOT_FOUND, request);
+    }
+
+    // URL은 있지만 지원하지 않는 메서드 (예: PUT /api/study-posts/1)
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException e, HttpServletRequest request
+    ) {
+        log.warn("[MethodNotSupported] {} {}", request.getMethod(), request.getRequestURI());
+        return toResponse(ErrorCode.COMMON_METHOD_NOT_ALLOWED, request);
+    }
+
+    private ResponseEntity<ErrorResponse> toResponse(ErrorCode errorCode, HttpServletRequest request) {
+        return ResponseEntity
+                .status(errorCode.getHttpStatus())
+                .body(ErrorResponse.of(errorCode, request));
     }
 
     // 그 외 예상치 못한 모든 예외는 500으로 처리해요

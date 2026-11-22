@@ -15,6 +15,8 @@ public enum ErrorCode {
     COMMON_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-002", "서버 내부 오류가 발생했습니다."),
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "COMMON-003", "요청 값이 올바르지 않아요."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON-004", "로그인이 필요하거나 유효하지 않은 토큰이에요."),
+    COMMON_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON-005", "존재하지 않는 API예요."),
+    COMMON_METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON-006", "지원하지 않는 HTTP 메서드예요."),
 
     // BOOK
     BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOK-001", "책을 찾을 수 없습니다."),
