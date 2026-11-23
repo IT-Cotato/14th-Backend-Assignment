@@ -1,0 +1,30 @@
+package com.cotato.backend14th.global.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+
+@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI openAPI() {
+        SecurityScheme bearer = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT");
+
+        return new OpenAPI()
+                .info(new Info()
+                        .title("My API")
+                        .description("스터디 실습용 API 문서")
+                        .version("v1.0.0"))
+                .components(new Components().addSecuritySchemes("bearerAuth", bearer))
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+    }
+}
