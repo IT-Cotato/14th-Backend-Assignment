@@ -1,9 +1,9 @@
 ---
 description: 컨트롤러/공통 응답 레이어 작업 시 공통 응답 포맷을 지키기 위한 규칙.
 paths:
-  - "src/main/java/com/cotato/backend14th/**/controller/**"
-  - "src/main/java/com/cotato/backend14th/global/common/response/**"
-  - "src/main/java/com/cotato/backend14th/global/exception/**"
+  - "backend/src/main/java/com/cotato/backend14th/**/controller/**"
+  - "backend/src/main/java/com/cotato/backend14th/global/common/response/**"
+  - "backend/src/main/java/com/cotato/backend14th/global/exception/**"
 ---
 
 # API 응답 포맷 규칙

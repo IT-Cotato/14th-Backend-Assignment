@@ -38,3 +38,9 @@ out/
 
 ### environment ###
 .env
+
+### frontend ###
+node_modules/
+frontend/dist/
+playwright-report/
+test-results/
