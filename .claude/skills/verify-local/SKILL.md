@@ -1,12 +1,10 @@
 ---
 name: verify-local
-description: "Gradle 빌드, 로컬 MySQL 연결, Swagger 응답을 점검한다. 처음 개발 환경을 구성했거나 의존성·DB·API 설정을 변경한 뒤 제출 전에 사용한다."
+description: "백엔드 빌드, 로컬 MySQL과 Swagger, 프론트 빌드 및 E2E를 점검한다. 환경이나 API를 바꾼 후 제출 전에 사용한다."
 ---
 
-# 로컬 백엔드 점검
-
-1. [로컬 개발 환경 점검](../../../docs/local-verification.md)을 읽고 Java와 Gradle Wrapper를 확인한다.
-2. `git check-ignore .env`를 실행한다. DB 설정이 없거나 검증 전용 DB인지 확인할 수 없으면 `assemble`까지만 실행하고 DB와 Swagger 점검을 보류한다.
-3. 검증 전용 DB가 준비되면 문서에 맞는 Wrapper 명령으로 `build`를 실행한다. 실패하면 최초 실패 태스크와 원인을 기록한다.
-4. 로컬 앱을 실행해 DB 연결 로그, Swagger UI, OpenAPI JSON을 확인한다. HTTP 포트가 사용 중이면 빈 로컬 포트를 선택하고 실제 포트를 기록한다.
-5. 이번 점검에서 실행한 앱을 종료하고 빌드, DB, Swagger별로 실행 명령과 결과를 정리한다.
+1. 루트의 [로컬 점검 문서](../../../docs/local-verification.md)를 읽는다.
+2. 루트에서 `git check-ignore backend/.env`로 설정 파일 제외 여부를 확인한다.
+3. `backend/`에서 Gradle Wrapper로 빌드한 뒤 로컬 MySQL로 앱을 실행하고 Swagger를 확인한다.
+4. `frontend/`에서 프론트 빌드와 Playwright를 실행한다.
+5. 이번 점검에서 시작한 프로세스를 종료하고 각 명령의 결과를 기록한다. 비밀값은 출력하지 않는다.

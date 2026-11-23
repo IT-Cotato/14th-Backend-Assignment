@@ -1,38 +1,24 @@
 # CLAUDE.md
 
-## 프로젝트 개요
+코테이토 스터디 매칭 플랫폼이다. 회원은 이메일로 로그인하고, 모집글에 댓글을 남겨 스터디에 신청한다.
+백엔드는 Java 17, Spring Boot 3.5, MySQL과 Gradle Wrapper를 사용한다. 기본 패키지는 `com.cotato.backend14th`다.
+프론트는 React, TypeScript, Vite, Tailwind CSS를 사용한다.
 
-코테이토 14기 백엔드 스터디의 공용 과제 저장소다.
-Java 21, Gradle Wrapper, Spring Boot 4.1.1, Spring Data JPA, MySQL을 사용한다.
-기본 패키지는 `com.cotato.backend14th`다. 현재 `/hello`, 책 등록·단건 조회 실습 API, 공통 응답과 예외 처리, Swagger 설정이 있다.
+- `backend/`는 Spring 애플리케이션과 JUnit 5 테스트를 담는다.
+- `frontend/`는 React 앱과 Playwright 시나리오를 담는다.
+- API 변경 전 [API 명세](docs/api-spec.md)와 [백엔드 컨벤션](docs/backend-conventions.md)을 읽는다.
+- 실행과 DB 설정은 [로컬 개발 환경 점검](docs/local-verification.md)을 참고하거나 `/verify-local`을 사용한다.
 
-## 어디서 무엇을 읽을지
-
-- 패키지 배치와 응답 형식은 [백엔드 컨벤션](docs/backend-conventions.md)을 읽는다.
-- DB 연결, Swagger, 로컬 테스트는 [개발 환경 점검](docs/local-verification.md)을 읽는다.
-- 저장소 작업에는 [.claude/rules/repository.md](.claude/rules/repository.md)가 적용된다.
-- 컨트롤러를 수정할 때는 [.claude/rules/controller.md](.claude/rules/controller.md)가 적용된다.
-- 개발 환경을 처음 띄우거나 설정을 바꾼 뒤에는 `/verify-local`을 사용한다.
-
-## 주요 명령어
-
-| 작업 | macOS·Linux·Git Bash | Windows PowerShell |
+| 위치 | 작업 | 명령 |
 | --- | --- | --- |
-| 컴파일과 패키징 | `./gradlew assemble` | `./gradlew.bat assemble` |
-| 테스트 | `./gradlew test` | `./gradlew.bat test` |
-| 빌드와 테스트 | `./gradlew build` | `./gradlew.bat build` |
-| 로컬 실행 | `./gradlew bootRun` | `./gradlew.bat bootRun` |
+| `backend/` | 빌드 및 테스트 | `./gradlew build` 또는 `.\gradlew.bat build` |
+| `backend/` | 실행 | `./gradlew bootRun` 또는 `.\gradlew.bat bootRun` |
+| `frontend/` | 의존성 설치 | `npm ci` |
+| `frontend/` | 실행과 빌드 | `npm run dev`, `npm run build` |
+| `frontend/` | E2E | 백엔드 실행 후 `npx playwright test` |
 
-테스트와 앱 실행 전 로컬 MySQL 연결을 준비한다. 훅을 실행하려면 `node`가 PATH에 있어야 한다.
-
-## 작업 방식
-
-- 요청 범위와 관련 코드를 확인한 뒤 기존 구현을 재사용한다. 여러 파일에 걸친 변경은 먼저 작업 순서와 검증 방법을 정한다.
-- 기능을 바꿀 때는 성공과 실패 응답을 함께 확인한다. 완료 보고에는 실제 실행한 명령과 결과를 적는다.
-- 검증이 막히면 실패한 단계와 원인을 남긴다.
-
-## 영구 금지
-
-- 실제 `.env`, DB 자격 증명, 토큰을 커밋하거나 출력하지 않는다.
-- 공용 `develop`에 직접 push하거나 강제 push하지 않는다.
-- 공유 DB나 운영 DB에서 로컬 검증을 실행하지 않는다.
+- 새 API는 `/api` 아래에 두고 기존 공통 응답을 사용한다. 204는 본문을 비운다.
+- 공개 조회, 로그인 사용자 작성, 작성자 수정·삭제 권한을 서버에서 확인한다.
+- 실제 `backend/.env`, DB 자격 증명, JWT 시크릿과 토큰을 커밋하거나 출력하지 않는다.
+- 공유 DB와 운영 DB에서 로컬 테스트를 실행하지 않는다.
+- 공용 `develop` 직접 push와 강제 push를 금지한다.
