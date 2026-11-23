@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/main/java/**/controller/**/*.java"
+  - "backend/src/main/java/**/controller/**/*.java"
 ---
 
 # 컨트롤러 작성 규칙
@@ -27,7 +27,7 @@ paths:
 - `@PathVariable`, `@RequestParam`에는 `@Parameter(description = "...", example = "...")`를 붙여요.
 
 ## 기타
-- URL은 복수형 명사로 써요. (예: `/books`, `/books/{id}`)
+- URL은 `/api`로 시작하고 복수형 명사로 써요. (예: `/api/study-posts`, `/api/study-posts/{postId}`)
 - 의존성은 생성자 주입으로 받아요. (`@Autowired` 필드 주입 금지)
 
 ## 예시

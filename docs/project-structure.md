@@ -5,11 +5,12 @@
 ## 패키지 구조 (도메인형)
 
 ```
-src/main/java/com/cotato/backend14th/
+backend/src/main/java/com/cotato/backend14th/
 ├── Backend14thApplication.java     # @EnableJpaAuditing 포함
 ├── domain/
 │   └── book/                       # 연습용 도메인 (2주차)
 │       ├── controller/             # 요청/응답 처리
+│       ├── service/                # 비즈니스 로직 (5주차부터)
 │       ├── dto/                    # XxxRequest, XxxResponse
 │       ├── entity/                 # DB 테이블과 매핑되는 객체
 │       └── repository/             # JpaRepository 상속
@@ -23,7 +24,7 @@ src/main/java/com/cotato/backend14th/
 
 - 새 도메인은 `domain/` 아래에 같은 4개 폴더(controller, dto, entity, repository)로 만들어요.
 - 특정 도메인에 속하지 않는 공통 코드는 `global/`에 둬요.
-- 지금은 Controller가 Repository를 바로 호출하지만, 5주차부터는 Service 계층을 추가할 예정이에요.
+- 5주차부터는 Controller → Service → Repository 순서로 호출해요. Controller는 요청/응답만, Service는 비즈니스 로직과 권한 검사를 맡아요.
 
 ## 응답 형식
 
