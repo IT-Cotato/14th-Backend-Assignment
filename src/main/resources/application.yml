@@ -1,7 +1,0 @@
-spring:
-  config:
-    import: optional:file:.env[.properties]
-  application:
-    name: backend14th
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE:local}
