@@ -1,117 +1,460 @@
+
 ---
 name: summarize-changes
-description: Git 변경사항을 요약하고 민감 정보 노출, 불필요한 파일 변경, 프로젝트 규칙 위반 같은 위험 요소를 점검하는 읽기 전용 스킬이에요. 사용자가 코드 변경사항 확인, 변경 내용 요약, 커밋 전 검토를 요청할 때 사용해요.
+description: Git 변경사항을 요약하고 민감 정보 노출, 불필요한 파일 변경, 프로젝트 규칙 위반, 모노레포 구조 문제를 점검하는 읽기 전용 스킬이에요. 사용자가 코드 변경사항 확인, 변경 내용 요약, 커밋 전 검토를 요청할 때 사용해요.
 ---
 
 # summarize-changes
 
-현재 작업 트리의 Git 변경사항을 읽어서 **변경사항 요약**, **위험 요소**, **검증 필요 사항**으로 나눠 한국어로 보고해요.
+현재 Git 작업 트리의 변경사항을 읽어서 한국어로 보고해요.
+
+보고 항목:
+1. 변경사항 요약
+2. 위험 요소
+3. 검증 필요 사항
 
 ## 0. 절대 규칙: 읽기 전용
 
-이 스킬은 Git 상태와 파일을 **읽기만** 해요.
+이 스킬은 Git 상태와 파일을 읽기만 해요.
 
-- 실행해도 되는 명령: `git status`, `git diff`, `git diff --staged`, `git ls-files`, `git log`, `git branch --show-current`, 그리고 파일 읽기
-- 실행하면 안 되는 명령: `git add`, `git commit`, `git push`, `git reset`, `git restore`, `git checkout`, `git switch`, `git stash`, `git clean`, `git rm`, `git mv`, `git rebase`, `git merge`, `git tag`, `git branch -d/-D` 등 Git 상태를 바꾸는 모든 명령
-- 파일을 만들거나 고치거나 지우지 않아요. 문제를 발견해도 직접 고치지 않고 보고만 해요. 수정은 사용자가 따로 요청했을 때 이 스킬 밖에서 해요.
-- `.env`처럼 비밀값이 들어 있는 파일은 내용을 열어 출력하지 않아요. 보고서에도 변수 **이름**만 쓰고 값은 쓰지 않아요.
+허용하는 Git 명령:
+- git status
+- git diff
+- git diff --staged
+- git diff --stat
+- git ls-files
+- git log
+- git branch --show-current
 
-## 1. 변경 파일 확인
+금지하는 Git 명령:
+- git add
+- git commit
+- git push
+- git reset
+- git restore
+- git checkout
+- git switch
+- git stash
+- git clean
+- git rm
+- git mv
+- git rebase
+- git merge
+- git tag
+- git branch -d
+- git branch -D
+
+이 스킬은 파일을 생성, 수정, 삭제하지 않아요.
+
+문제를 발견하면 보고만 해요.
+
+민감 정보가 들어 있는 파일은 내용을 열거나 출력하지 않아요.
+
+사용자가 별도로 요청하지 않는 한 테스트나 빌드도
+직접 실행하지 않고 필요한 명령어만 안내해요.
+
+## 1. 현재 브랜치 확인
+
+다음 명령어를 사용해요.
 
 ```bash
 git branch --show-current
 git status
 ```
 
-- 현재 브랜치를 기록해요. 4주차 작업인데 `seungju/harness`가 아니면 위험 요소에 적어요.
-- staged, unstaged, untracked 파일을 구분해서 목록을 만들어요.
+5·6주차 작업 브랜치:
+`seungju/monorepo`
 
-## 2. 추적 중인 파일의 변경 내용 확인
+PR 대상 브랜치:
+`seungju/basic`
+
+확인 사항:
+- 현재 브랜치가 seungju/monorepo인지 확인해요.
+- main, develop에서 작업 중이면 위험 요소로 보고해요.
+- 기존 변경사항을 임의로 되돌리지 않아요.
+- 브랜치를 자동으로 변경하지 않아요.
+
+## 2. 변경 파일 확인
+
+다음 명령어를 사용해요.
 
 ```bash
-git diff
-git diff --staged
+git diff --stat
+git diff --staged --stat
+git status --short
 ```
 
-- `git diff`는 아직 stage하지 않은 변경, `git diff --staged`는 stage된 변경이에요. 둘 다 봐요.
-- diff가 너무 길면 `git diff --stat`, `git diff --staged --stat`으로 전체 규모를 먼저 보고, 파일별로 `git diff -- <파일>`로 나눠서 읽어요.
+변경사항을 다음과 같이 구분해요.
 
-## 3. 추적되지 않은 새 파일 확인
+- staged: 커밋 준비가 된 파일
+- unstaged: 아직 Stage하지 않은 변경
+- untracked: Git이 추적하지 않는 새 파일
+
+필요한 경우 파일별 diff를 확인해요.
+
+```bash
+git diff -- <파일경로>
+git diff --staged -- <파일경로>
+```
+
+민감 정보가 포함된 파일은 내용을 출력하지 않아요.
+
+새로운 파일 목록은 다음 명령어로 확인해요.
 
 ```bash
 git ls-files --others --exclude-standard
 ```
 
-- 새 파일은 `git diff`에 나오지 않아요. 내용을 알고 싶으면 파일을 직접 읽어야 해요.
-- 새 파일이 많으면 주요 파일만 읽고, **읽은 파일과 읽지 않은 파일을 보고서에 구분해서 적어요.**
-- 직접 읽지 않은 파일은 "목록만 확인했고 내용은 확인하지 않았어요"라고 적어요. 파일 이름만 보고 내용을 추측해서 확인한 것처럼 쓰지 않아요.
-- 비밀값이 들어 있을 수 있는 파일(`.env`, `*.pem`, `*.key`, `credentials*` 등)이 목록에 있으면 내용을 열지 않고, 파일이 존재한다는 사실만 위험 요소로 보고해요.
+파일을 직접 읽지 않았다면 확인한 것으로 간주하지 않아요.
 
-## 4. 변경사항이 없을 때
+## 3. 모노레포 변경사항 분석
 
-1~3단계 결과가 모두 비어 있으면(staged·unstaged 변경도, 새 파일도 없으면) 다음처럼 안내하고 끝내요.
+현재 프로젝트 구조:
 
-> 현재 브랜치 `<브랜치명>`에는 변경사항이 없어요. (staged, unstaged, untracked 모두 없음)
+14th-Backend-Assignment/
+- backend/
+- frontend/
+- docs/
+- .claude/
+- .github/
+- CLAUDE.md
 
-## 5. 파일별 주요 수정사항과 주의할 점 요약
+변경 파일을 다음과 같이 분류해요.
 
-변경 파일마다 다음을 정리해요.
+### Backend
 
-- 무엇이 바뀌었는지 (추가 / 수정 / 삭제 / 이름 변경)
-- 변경의 의도로 보이는 것 (diff나 직접 읽은 내용에 근거해서만 써요)
-- 주의할 점 (동작 변경, 다른 파일에 미치는 영향, 누락돼 보이는 짝 변경 등)
+`backend/`
 
-## 6. 위험 요소 점검
+확인 사항:
+- Controller
+- Service
+- Repository
+- Entity
+- DTO
+- Security
+- API 응답 및 예외 처리
+- Gradle 의존성
+- 환경 설정
+- 테스트
 
-아래 항목을 하나씩 점검해요. 기준은 `CLAUDE.md`와 `.claude/rules/git-workflow.md`예요.
+### Frontend
 
-### 민감 정보 노출
+`frontend/`
 
-- `.env`가 staged 상태이거나 추적되고 있는지
-- diff나 읽은 파일에 비밀번호, 토큰, API 키, 실제 DB URL·계정처럼 보이는 문자열이 있는지
-- `application*.yml`에 `${...}` 플레이스홀더 대신 실제 값이나 비밀값 기본값이 하드코딩됐는지
+확인 사항:
+- React 컴포넌트
+- 페이지 및 라우팅
+- Axios API 호출
+- JWT 토큰 처리
+- Tailwind CSS
+- TypeScript 오류 가능성
+- Playwright E2E 테스트
 
-### 불필요한 파일 변경
+### Documentation
 
-- 빌드 결과물·IDE·로컬 파일(`build/`, `.gradle/`, `.idea/`, `out/`, `*.log` 등)이 변경 목록에 있는지
-- 요청 범위와 상관없어 보이는 파일 수정, 의미 없는 공백·줄바꿈·포맷 변경이 섞였는지
-- 대량 삭제나 파일 전체 재작성처럼 보이는 변경이 있는지
+`docs/`
 
-### 프로젝트 규칙 위반 가능성
+확인 사항:
+- ERD
+- API 명세
+- 기능 문서
+- 실제 구현과 문서의 일치 여부
 
-- 현재 브랜치가 주차별 작업 브랜치와 맞는지 (`main`, `develop`에서 직접 작업 중이면 반드시 보고)
-- 성격이 다른 변경(문서와 코드 등)이 한 커밋에 섞일 상황인지
-- 코드 컨벤션: 성공 응답은 `ResponseUtils.ok/created`와 `ApiResponse` 사용, 에러는 `Backend14thException(ErrorCode.X)` 사용, 새 `ErrorCode`는 도메인별 그룹과 `BOOK-001` 같은 코드 형식, 엔티티는 `BaseEntity` 상속, 컨트롤러에 `@Tag`/`@Operation` 적용
-- CORS 설정을 바꿨다면 `CorsConfig`의 두 설정(`WebMvcConfigurer`, `CorsConfigurationSource`)이 함께 바뀌었는지
-- 주석·API 설명은 `~해요` 체, `ErrorCode` 메시지는 `~습니다` 체인지
+### Claude Code Harness
 
-해당 사항이 없으면 "발견된 문제 없음"이라고 적어요. 근거 없이 문제를 만들어내지 않아요.
+`.claude/`
+`CLAUDE.md`
 
-## 7. 보고 형식
+확인 사항:
+- Rules 변경
+- Skills 변경
+- Hooks 변경
+- settings.json 변경
+- 모노레포 경로 반영
+- 기존 하네스 기능 유지 여부
 
-한국어로, 아래 세 섹션을 구분해서 보고해요.
+## 4. 민감 정보 점검
 
-```markdown
-## 변경사항 요약
-- 브랜치: `<브랜치명>`
-- staged: N개 / unstaged: N개 / untracked: N개
+다음 파일과 정보가 Git에 포함되지 않았는지 확인해요.
 
-| 파일 | 상태 | 주요 수정사항 | 주의할 점 |
-| --- | --- | --- | --- |
-| `path/to/file` | 수정(unstaged) | ... | ... |
+- backend/.env
+- frontend/.env
+- DB 비밀번호
+- JWT Secret
+- API Key
+- Access Token
+- 개인 인증 정보
+- *.pem
+- *.key
+- credentials 파일
 
-- 내용을 직접 확인한 새 파일: ...
-- 목록만 확인하고 내용은 확인하지 않은 새 파일: ...
+민감 정보 파일은 내용을 읽거나 출력하지 않아요.
 
-## 위험 요소
-- [민감 정보] ...
-- [불필요한 변경] ...
-- [규칙 위반 가능성] ...
-(없으면 "발견된 위험 요소 없음")
+다음 항목을 확인해요.
 
-## 검증 필요 사항
-- 사용자가 직접 확인하거나 실행해 봐야 하는 것 (예: `./gradlew build`, 특정 API 수동 호출, 내용을 확인하지 못한 파일 검토)
+- .env 파일이 추적되고 있지 않은가?
+- 민감 정보가 Stage되어 있지 않은가?
+- 환경변수 대신 비밀번호를 하드코딩하지 않았는가?
+- JWT Secret이 코드에 직접 작성되어 있지 않은가?
+- 실제 DB 접속 정보가 문서에 포함되지 않았는가?
+
+문제가 발견되면 사용자에게 알려요.
+
+이 스킬에서 직접 수정하지 않아요.
+
+이미 Push된 민감 정보는 이력 재작성 없이 사용자에게
+문제와 비밀값 교체 필요성을 알려요.
+
+## 5. 불필요한 파일 점검
+
+다음 파일과 폴더가 커밋 대상에 포함되지 않았는지 확인해요.
+
+- backend/build/
+- frontend/dist/
+- frontend/node_modules/
+- .gradle/
+- .idea/
+- out/
+- playwright-report/
+- test-results/
+- *.log
+
+확인 사항:
+- 빌드 결과물이 포함되지 않았는가?
+- IDE 설정 파일이 포함되지 않았는가?
+- 요청 범위 밖의 파일이 수정되지 않았는가?
+- 불필요한 대량 삭제가 발생하지 않았는가?
+- 의미 없는 포맷 변경이 섞이지 않았는가?
+
+필요한 경우 파일 목록과 변경 내용을 구분해서 보고해요.
+
+## 6. Backend 규칙 점검
+
+기준:
+- CLAUDE.md
+- .claude/rules/controller-rules.md
+
+확인 사항:
+
+- 신규 API가 /api로 시작하는가?
+- Controller → Service → Repository 구조를 사용하는가?
+- Entity를 API 응답으로 직접 반환하지 않는가?
+- ApiResponse 공통 응답 형식을 사용하는가?
+- ResponseUtils를 올바르게 사용하는가?
+- 실패 응답에 Backend14thException과 ErrorCode를 사용하는가?
+- HTTP 204 응답에 불필요한 본문이 없는가?
+- DTO 입력값 검증이 적용되어 있는가?
+- 검증 실패 시 400 응답을 반환하는가?
+- JPA 연관관계가 LAZY인가?
+- Enum이 문자열로 저장되는가?
+- 인증과 작성자 권한을 서버에서 확인하는가?
+- Swagger 문서가 작성되어 있는가?
+
+기존 BookController와 HelloController는
+요청 없이 수정하지 않았는지도 확인해요.
+
+## 7. Frontend 규칙 점검
+
+확인 사항:
+
+- React와 TypeScript를 사용하는가?
+- Vite 기반 프로젝트인가?
+- Tailwind CSS를 사용하는가?
+- React Router 경로가 올바른가?
+- Axios 요청이 API 명세와 일치하는가?
+- 프론트엔드 개발 서버 포트가 3000인가?
+- 로그인 상태에 따라 헤더가 변경되는가?
+- 인증이 필요한 화면을 보호하는가?
+- 서버에서 401이 반환되면 로그인 화면으로 이동하는가?
+- 서버의 에러 메시지를 사용자에게 표시하는가?
+- 로딩 상태를 표시하는가?
+- 모바일 화면을 고려했는가?
+
+확인하지 못한 항목은 확인이 필요하다고 보고해요.
+
+## 8. API 명세 일치 여부
+
+기준 문서:
+`docs/api-spec.md`
+
+다음 기능을 확인해요.
+
+### Authentication
+- 회원가입
+- 로그인
+- 로그아웃
+- 내 정보 조회
+
+### Study Posts
+- 작성
+- 목록
+- 검색 및 필터
+- 상세
+- 수정
+- 삭제
+
+### Comments
+- 작성
+- 목록
+- 수정
+- 삭제
+
+총 13개 API를 기준으로 확인해요.
+
+확인 사항:
+- HTTP Method
+- URL
+- Request DTO
+- Response DTO
+- HTTP Status
+- ErrorCode
+- 인증 및 권한
+- 페이지네이션
+- 검색 및 필터
+
+실제 코드와 명세를 모두 확인한 항목만
+검증 완료로 표시해요.
+
+## 9. 테스트 점검
+
+### Backend
+
+실행 명령어:
+
+```powershell
+cd backend
+.\gradlew.bat test
 ```
 
-- 보고는 확인한 사실에 근거해서만 해요. 확인하지 못한 부분은 확인하지 못했다고 분명히 적어요.
-- 보고가 끝나도 커밋, push, stage 같은 후속 작업은 하지 않아요. 사용자가 원하면 따로 요청하도록 안내만 해요.
+확인 사항:
+- 서비스 로직 단위 테스트
+- 입력 검증
+- 인증
+- 작성자 권한
+- 기존 테스트 통과 여부
+
+### Frontend
+
+실행 명령어:
+
+```powershell
+cd frontend
+npm run build
+```
+
+확인 사항:
+- TypeScript 컴파일
+- Vite 빌드
+
+Lint 명령어는 package.json에 정의된 경우에만 안내해요.
+
+### E2E
+
+실행 명령어:
+
+```powershell
+cd frontend
+npx playwright test
+```
+
+확인 사항:
+- 인증 정상 시나리오
+- 인증 에러 시나리오
+- 모집글 정상 시나리오
+- 모집글 에러 시나리오
+- 댓글 정상 시나리오
+- 댓글 에러 시나리오
+
+실제로 테스트를 실행하지 않았다면
+통과했다고 보고하지 않아요.
+
+사용자가 제공한 테스트 결과가 있다면
+해당 결과를 근거로 보고해요.
+
+## 10. 문서 및 하네스 점검
+
+필수 문서:
+- docs/erd/ ERD 이미지
+- docs/api-spec.md
+- docs/features/ 기능 문서 1개
+
+하네스:
+- CLAUDE.md
+- .claude/settings.json
+- .claude/hooks/
+- .claude/rules/
+- .claude/skills/
+
+확인 사항:
+- 경로가 모노레포 구조와 일치하는가?
+- 기존 4주차 규칙이 유지되는가?
+- 불필요한 설정 삭제가 없는가?
+- 새 기능에 필요한 규칙이 추가되었는가?
+- 문서와 실제 구현 내용이 일치하는가?
+
+## 11. 변경사항이 없을 때
+
+staged, unstaged, untracked 항목이 모두 없다면
+다음 형식으로 보고해요.
+
+현재 브랜치 `<브랜치명>`에는 변경사항이 없어요.
+
+- staged: 0개
+- unstaged: 0개
+- untracked: 0개
+
+## 12. 보고 형식
+
+한국어로 다음 세 섹션을 구분해서 작성해요.
+
+### 변경사항 요약
+
+- 현재 브랜치
+- staged 파일 개수
+- unstaged 파일 개수
+- untracked 파일 개수
+
+변경 파일을 표로 정리해요.
+
+| 파일 | 구분 | 상태 | 주요 변경 | 주의할 점 |
+|---|---|---|---|---|
+| 파일 경로 | Backend/Frontend/Docs/Harness | 수정 | 변경 내용 | 확인 사항 |
+
+새 파일은 직접 내용을 확인한 파일과
+목록만 확인한 파일을 구분해요.
+
+### 위험 요소
+
+다음 범주로 정리해요.
+
+- 민감 정보
+- 불필요한 파일
+- Git 브랜치
+- Backend 규칙
+- Frontend 규칙
+- API 명세 불일치
+- 하네스 설정
+
+문제가 없다면 다음과 같이 작성해요.
+
+`확인한 범위에서 발견된 위험 요소 없음`
+
+### 검증 필요 사항
+
+다음 내용을 포함해요.
+
+- 실행이 필요한 테스트
+- 확인하지 못한 파일
+- API 명세 검증 필요 항목
+- ERD와 Entity 일치 여부
+- E2E 테스트 필요 항목
+
+## 13. 스킬 종료 규칙
+
+- 모든 보고는 확인한 사실에 근거해요.
+- 확인하지 않은 사항은 검증 완료로 표시하지 않아요.
+- 민감 정보를 출력하지 않아요.
+- 코드를 임의로 수정하지 않아요.
+- Git 상태를 변경하지 않아요.
+- 커밋, Push, PR을 자동으로 생성하지 않아요.
+- 사용자 요청 없이 위험한 Git 명령을 실행하지 않아요.

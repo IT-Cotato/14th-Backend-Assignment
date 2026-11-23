@@ -2,6 +2,10 @@
 
 현재 코드에서 실제로 확인되는 규칙과, 앞으로 코드를 추가할 때 지키면 좋은 권장 규칙을 정리한 문서예요.
 
+> **적용 범위 안내 (5·6주차 갱신)**
+> 이 문서는 1~4주차 `book` 도메인 코드를 기준으로 작성됐어요. 아래의 "💡 권장 규칙" 중 서비스 레이어(`<도메인>Service`), 요청 DTO의 Bean Validation과 `@Valid`, 검증 예외 핸들러(400 `COMMON-003` `INVALID_INPUT`), `record` DTO, 정적 팩토리 메서드(`from`/`of`)는 5·6주차 코드(`auth`, `user`, `studypost`, `comment`)에 이미 적용됐어요.
+> 5·6주차 코드의 실제 규칙은 [`CLAUDE.md`](../CLAUDE.md), [`.claude/rules/controller-rules.md`](../.claude/rules/controller-rules.md), [`project-structure.md`](./project-structure.md)를 우선해요. `book` 관련 "⚠️ 현재 예외"는 레거시 코드를 그대로 유지하기로 해서 남아 있는 내용이에요.
+
 > 표기 규칙
 > - ✅ **현재 규칙**: 지금 코드에서 실제로 지켜지고 있는 규칙이에요. 새 코드도 이 규칙을 따라요.
 > - 💡 **권장 규칙**: 아직 코드에 반영되지 않았지만 앞으로 적용하길 권장하는 규칙이에요. 도입할 때는 기존 코드와의 차이를 함께 정리해요.
@@ -206,7 +210,7 @@
 
 - 변환 코드가 중복되므로 `BookResponse.from(Book book)` 같은 정적 팩토리 메서드로 모으는 것을 권장해요.
 - 요청 DTO에는 Bean Validation 어노테이션(`@NotBlank` 등)을 붙이고 컨트롤러에서 `@Valid`를 사용해요. (도입 시 5장의 예외 핸들러도 함께 추가)
-- Java 21을 쓰고 있으니 불변 DTO는 `record` 사용도 고려할 수 있어요. 도입 여부는 팀/스터디 기준에 맞춰 정해요.
+- Java 17(record 지원)을 쓰고 있으니 불변 DTO는 `record` 사용도 고려할 수 있어요. 도입 여부는 팀/스터디 기준에 맞춰 정해요.
 
 ---
 
