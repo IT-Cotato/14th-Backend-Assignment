@@ -2,7 +2,9 @@
 
 ## 패키지 구조
 
-- 도메인별로 `domain/<도메인명>/` 아래에 `controller`, `dto`, `entity`, `repository`를 만든다.
+- 도메인별로 `domain/<도메인명>/` 아래에 `controller`, `service`, `dto`, `entity`, `repository`를 만든다.
+- 비즈니스 로직은 `service`에 둔다. Controller는 Service만 호출하고, Repository를 직접 호출하지 않는다.
+  (`book` 도메인은 연습용이라 service 없이 Controller가 Repository를 직접 호출한다.)
 - 여러 도메인이 공유하는 코드만 `global/` 아래에 둔다.
 - 도메인명은 소문자 단수형을 쓴다. (`book`, `member`)
 
@@ -11,10 +13,16 @@
 | 종류 | 규칙 | 예시 |
 | --- | --- | --- |
 | Controller | `<도메인>Controller` | `BookController` |
+| Service | `<도메인>Service` | `AuthService` |
 | Repository | `<도메인>Repository` | `BookRepository` |
 | Entity | 도메인명 그대로 | `Book` |
 | 요청 DTO | `<도메인>Request` | `BookRequest` |
 | 응답 DTO | `<도메인>Response` | `BookResponse` |
+| 기능별 요청 DTO | `<도메인><기능>Request` 또는 `<기능>Request` | `StudyPostCreateRequest`, `SignupRequest` |
+| 기능별 응답 DTO | `<도메인><기능>Response` 또는 `<기능>Response` | `StudyPostDetailResponse`, `LoginResponse` |
+
+- 한 도메인에 요청·응답 DTO가 여러 개면 기능 이름을 붙여 구분한다.
+- 기능 이름만으로 뜻이 분명하면(`Signup`, `Login`) 도메인 이름을 생략할 수 있다.
 
 ## Entity
 
