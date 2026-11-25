@@ -11,7 +11,7 @@
 | 2주차 | Swagger, .env 파일 설정 | 코드 제공 | [바로가기](https://inexpensive-redcurrant-648.notion.site/2-Swagger-env-4a9e639500cc821ebb9201e20a8a5ac7?source=copy_link) |
 | 3주차 | 공통 응답, CORS, Security, BaseEntity 설정 | 코드 제공 | [바로가기](https://inexpensive-redcurrant-648.notion.site/3-CORS-Security-BaseEntity-fd7e639500cc8359b22681ec7ec5c24d?source=copy_link) |
 | 4주차 | 하네스 엔지니어링 | 자료 참고, 개인 구축 | [바로가기](https://inexpensive-redcurrant-648.notion.site/4-104e639500cc839d98aa015a89917e4a?source=copy_link) |
-| 5~6주차 | 스터디 매칭 플랫폼 만들기 | 자료 참고, 개인 구축 | [바로가기](https://inexpensive-redcurrant-648.notion.site/5-6-ca6e639500cc821081810186e929ad2c?source=copy_link) |
+| 5~6주차 | 백엔드 + 프론트 개발 | 자료 참고, 개인 구축 | [바로가기](https://inexpensive-redcurrant-648.notion.site/5-6-ca6e639500cc821081810186e929ad2c?source=copy_link) |
 
 ## 주차별 소개
 
