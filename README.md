@@ -7,11 +7,11 @@
 
 | 주차 | 주제 | 방식 | 노션 |
 | --- | --- | --- | --- |
-| 1주차 | Git & GitHub | 코드 제공 | [바로가기](https://app.notion.com/p/1-Git-GitHub-3a4e639500cc8068aeb9d947825fad19?source=copy_link) |
-| 2주차 | Swagger, .env 파일 설정 | 코드 제공 | [바로가기](https://app.notion.com/p/2-Swagger-env-3aae639500cc80e0b9d7f9b0bb73851a?source=copy_link) |
-| 3주차 | 공통 응답, CORS, Security, BaseEntity 설정 | 코드 제공 | [바로가기](https://app.notion.com/p/3-CORS-Security-BaseEntity-3b3e639500cc80cbaadbcf43cf3e76d4?source=copy_link) |
-| 4주차 | 하네스 엔지니어링 | 자료 참고, 개인 구축 | [바로가기](https://app.notion.com/p/4-3f3e639500cc818caed7c12710a2503c?source=copy_link) |
-| 5~6주차 | 스터디 매칭 플랫폼 만들기 | 자료 참고, 개인 구축 | [바로가기](https://app.notion.com/p/5-6-3f3e639500cc8128a05dddce177b4702?source=copy_link) |
+| 1주차 | Git & GitHub | 코드 제공 | [바로가기](https://inexpensive-redcurrant-648.notion.site/1-Git-GitHub-423e639500cc8097a891cef6d6b70912?source=copy_link) |
+| 2주차 | Swagger, .env 파일 설정 | 코드 제공 | [바로가기](https://inexpensive-redcurrant-648.notion.site/2-Swagger-env-4a9e639500cc821ebb9201e20a8a5ac7?source=copy_link) |
+| 3주차 | 공통 응답, CORS, Security, BaseEntity 설정 | 코드 제공 | [바로가기](https://inexpensive-redcurrant-648.notion.site/3-CORS-Security-BaseEntity-fd7e639500cc8359b22681ec7ec5c24d?source=copy_link) |
+| 4주차 | 하네스 엔지니어링 | 자료 참고, 개인 구축 | [바로가기](https://inexpensive-redcurrant-648.notion.site/4-104e639500cc839d98aa015a89917e4a?source=copy_link) |
+| 5~6주차 | 스터디 매칭 플랫폼 만들기 | 자료 참고, 개인 구축 | [바로가기](https://inexpensive-redcurrant-648.notion.site/5-6-ca6e639500cc821081810186e929ad2c?source=copy_link) |
 
 ## 주차별 소개
 
